@@ -90,7 +90,7 @@ public class Graph {
         //I am getting a random number between 0 and 2 times the avgNumEdgesPerVertex
         //then adding neighbors (edges are represented by the number of neighbors a vertex has)
         for (int i=0;i<this.vertices.size(); i++){
-            for (int j=0; j<=this.randomGen(avgNumEdgesPerVertex*2); j++){
+            for (int j=0; j<=this.randomGen(avgNumEdgesPerVertex*3); j++){
                 //select a random vertex from this.vertices (vertex list) and add as neighbor
                 //ensure we don't add a vertex as a neighbor of itself
                 int neighbor = this.randomGen(this.vertices.size());
