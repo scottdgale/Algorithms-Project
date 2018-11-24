@@ -44,10 +44,12 @@ public class Graph {
         vertices = new ArrayList<Vertex>(0);
 
         //Create all the vertices in the graph
-        this.createNVertices();
         this.createWVertices();
+        this.createNVertices();
+
 
         //Create random edges between all the N and W vertices
+        this.createWEdges();
         this.actualTotalEdges = this.createEdges();
 
         //Creating and connecting H
@@ -76,10 +78,27 @@ public class Graph {
     }
 
     /**
+     * Create edges between the 'w' nodes AKA targeted nodes. This ensures that at least some
+     * relationship exists between some of the 'w' nodes.
+     *
+     */
+    private void createWEdges(){
+        for (int i=0; i<this.numWVertices; i++){
+            for (int j=0; j<this.randomGen(this.numWVertices); j++){
+                int neighbor = this.randomGen(this.numWVertices-1);
+                if (i!=neighbor){
+                    this.vertices.get(i).addNeighbor(this.vertices.get(neighbor));
+                }
+            }
+        }
+    }
+
+    /**
      * Generates random edges for each vertex in the graph. The number of edges created for each
      * vertex is computed by dividing the total number of desired edges in the graph (this.numTotalEdges)
      * by the number of vertices in the graph (this.vertices.size()) and then generating a random
      * integer between 1 and 2 * that number.
+     *
      * @return the number of edges actually created.
      */
     private int createEdges(){
@@ -87,10 +106,10 @@ public class Graph {
         int avgNumEdgesPerVertex = this.desiredTotalEdges/this.vertices.size();
         int countSuccessfulEdges = 0;
         //In order to determine the number of edges to create for each vertex
-        //I am getting a random number between 0 and 2 times the avgNumEdgesPerVertex
-        //then adding neighbors (edges are represented by the number of neighbors a vertex has)
+        //get a random number between 0 and 2 times the avgNumEdgesPerVertex
+        //then add neighbors (edges are represented by the number of neighbors each vertex has)
         for (int i=0;i<this.vertices.size(); i++){
-            for (int j=0; j<=this.randomGen(avgNumEdgesPerVertex*3); j++){
+            for (int j=0; j<=this.randomGen(avgNumEdgesPerVertex*2); j++){
                 //select a random vertex from this.vertices (vertex list) and add as neighbor
                 //ensure we don't add a vertex as a neighbor of itself
                 int neighbor = this.randomGen(this.vertices.size());
@@ -121,18 +140,21 @@ public class Graph {
 
     /**
      * Reveals the relationship between 'w' vertices in the following format:
-     * w1 - w2, w3, w4
-     * w2 - w1
-     * w3 - w1 . . . etc
+     * w1: w2, w3, w4
+     * w2: w1,
+     * w3: w1 . . . etc
      * This will facilitate printing the relationship between 'w' nodes.
      * @return String in the above format used to print to screen or compare.
      */
     public String revealRelationshipsInW(){
-        //This will return a string that explains how all the 'w' nodes are connected
-
-
-
-        return null;
+        String w = "";
+        if (this.numWVertices>0){
+            for (int i=0; i<this.numWVertices; i++){
+                //find w_i and print it with all its neighbors
+                w += "w" + i + ": " + this.vertices.get(i).getWNeighbors() + "\n";
+            }
+        }
+        return w;
     }
 
     /**
@@ -183,7 +205,7 @@ public class Graph {
         int rand;
         int numEdgesToDelete = this.actualTotalEdges*percentEdges/100;
         while (numEdgesToDelete>0){
-            rand = randomGen(numEdgesToDelete);
+            rand = randomGen(this.vertices.size());
             if (vertices.get(rand).removeRandomEdge()){
                 numEdgesToDelete--;
                 this.actualTotalEdges--;

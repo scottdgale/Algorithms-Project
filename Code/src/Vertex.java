@@ -78,6 +78,22 @@ public class Vertex {
     }
 
     /**
+     * Generates a string representation all 'w' neighbors
+     *
+     * @return only return 'w' neighbors
+     */
+    public String getWNeighbors(){
+        String s = "";
+        for (int i=0; i<this.neighbors.size(); i++){
+            if (this.neighbors.get(i).type == 'w'){
+                s +=  this.neighbors.get(i).toString() + ", ";
+            }
+
+        }
+        return s;
+    }
+
+    /**
      * Removes an edge/connection between two vertices
      *
      * @param v remove the edge connecting to this vertex (if it exists)
