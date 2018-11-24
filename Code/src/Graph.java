@@ -135,7 +135,6 @@ public class Graph {
         return null;
     }
 
-
     /**
      * Generates and return a random integer between 0 and upperBound
      *
@@ -147,6 +146,12 @@ public class Graph {
         return r.nextInt(upperBound);
     }
 
+
+    /**
+     * Return the number of edges in the graph.
+     *
+     * @return number of edges in the graph.
+     */
     public int getNumEdges(){
         return this.actualTotalEdges;
     }
@@ -166,6 +171,25 @@ public class Graph {
         }
         s += "Number of Total Edges: " + this.actualTotalEdges;
         return s;
+    }
+
+    /**
+     * Delete a given number of edges at random from the graph
+     *
+     * @param percentEdges is the percentage of edges to delete.
+     * @return the number of deleted edges
+     */
+    public int deleteEdges (int percentEdges) {
+        int rand;
+        int numEdgesToDelete = this.actualTotalEdges*percentEdges/100;
+        while (numEdgesToDelete>0){
+            rand = randomGen(numEdgesToDelete);
+            if (vertices.get(rand).removeRandomEdge()){
+                numEdgesToDelete--;
+                this.actualTotalEdges--;
+            }
+        }
+        return numEdgesToDelete;
     }
 
 }

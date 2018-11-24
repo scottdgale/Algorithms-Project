@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * The Vertex Class represents a vertex object in a undirected, unweighted simple graph
@@ -8,7 +9,6 @@ import java.util.ArrayList;
  * @since   19 November 2018
  */
 public class Vertex {
-
     //type is either x (for vertices in H), w (vertices we want to exploit), or n (neither x or w)
     private char type;
     //unique integer id - assigned by creating object
@@ -86,4 +86,27 @@ public class Vertex {
     public boolean removeConnection(Vertex v){
         return this.neighbors.remove(v);
     }
+
+    public boolean removeRandomEdge(){
+        boolean removed = false;
+        if (this.neighbors.size()>0){
+            //Delete a neighbor
+            int rand = this.randomGen(this.neighbors.size());
+            this.neighbors.remove(rand);
+            removed = true;
+        }
+        return removed;
+    }
+
+    /**
+    * Generates and return a random integer between 0 and upperBound
+    *
+    * @param upperBound The upperBound of the desired random integer.
+    * @return an integer ranging from 0 to upperBound inclusive.
+    */
+    private int randomGen (int upperBound){
+        Random r = new Random();
+        return r.nextInt(upperBound);
+    }
+
 }
