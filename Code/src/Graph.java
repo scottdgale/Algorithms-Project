@@ -36,20 +36,19 @@ public class Graph {
 		this.countWID = 0;
 		this.countNID = 0;
 
+		int epsilon = 1;
+
 		this.numNVertices = numN;
 		this.numWVertices = numW;
+		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices) / Math.log(2.0));
 		this.desiredTotalEdges = edges;
-
-		// The number of vertices in X is taken from the paper k = (2 + epsilon)log n
-		int epsilon = 1;
-		this.numXVertices = (int) ((2 + epsilon) * Math.log(numN) / Math.log(2.0));
 
 		vertices = new ArrayList<Vertex>(0);
 
 		// Create all the vertices in the graph
 		this.createWVertices();
 		this.createNVertices();
-		this.createXVerticies();
+		// this.createXVerticies();
 
 		// Create random edges between all the N and W vertices
 		this.createWEdges();
@@ -103,6 +102,24 @@ public class Graph {
 	}
 
 	/**
+	 * Create edges within X vertices Create successive edges between X edges (ie.
+	 * x_1 to x_2, x_2 to x_3, ... ) Create other edges with probability 1/2
+	 *
+	 */
+	private void createXEdges() {
+		// find out where to start in the vertices array list
+		// the X vertices are created after the W and N vertices, so they are at the end
+		int start = this.vertices.size() - this.numXVertices;
+		int end = (this.vertices.size() - 1);
+		// Add successive edges
+		for (int i = start; i < end; i++) {
+			this.vertices.get(i).addNeighbor(this.vertices.get(i + 1));
+		}
+
+		// Now add random edges between X vertices
+	}
+
+	/**
 	 * Generates random edges for each vertex in the graph. The number of edges
 	 * created for each vertex is computed by dividing the total number of desired
 	 * edges in the graph (this.numTotalEdges) by the number of vertices in the
@@ -138,6 +155,17 @@ public class Graph {
 	 */
 	public void createH() {
 		// Create H per the algorithm
+
+		// Create vertices of X --- The number of vertices in X is taken from the paper
+		// k = (2 + epsilon)log n
+		this.createXVerticies();
+
+		// Create edges within X (both successive and random)
+		this.createXEdges();
+
+		// determine external degree for each x_i
+		// add edges to G-H (number of edges matches the external degree of that vertex)
+
 	}
 
 	/**
@@ -146,6 +174,9 @@ public class Graph {
 	 */
 	private void connectH() {
 		// Connect H to G per the algorithm
+		// Connect X vertices to W vertices
+
+		// Connect X vertices to G - H per 'external degree'
 
 	}
 
