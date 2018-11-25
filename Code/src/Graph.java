@@ -79,7 +79,6 @@ public class Graph {
 	}
 
 	private void createXVerticies() {
-		System.out.println("Num x vertices: " + this.numXVertices);
 		for (int i = 0; i < this.numXVertices; i++) {
 			vertices.add(new Vertex('x', this.countXID++));
 		}
@@ -110,13 +109,29 @@ public class Graph {
 		// find out where to start in the vertices array list
 		// the X vertices are created after the W and N vertices, so they are at the end
 		int start = this.vertices.size() - this.numXVertices;
-		int end = (this.vertices.size() - 1);
+		int end = this.vertices.size();
+
 		// Add successive edges
-		for (int i = start; i < end; i++) {
+		for (int i = start; i < end - 1; i++) {
 			this.vertices.get(i).addNeighbor(this.vertices.get(i + 1));
 		}
 
-		// Now add random edges between X vertices
+		// Now add random edges between X vertices with prob 1/2
+		for (int i = start; i < end; i++) {
+			for (int j = start; j < end; j++) {
+				// add an edge if randomGen returns 0; don't add an edge if randomGen returns 1
+				if (i != j) {
+					int result = this.randomGen(2);
+					System.out.println(result);
+					if (result == 0) { // add an edge!
+						this.vertices.get(i).addNeighbor(this.vertices.get(j));
+					}
+				}
+
+			}
+
+		}
+
 	}
 
 	/**

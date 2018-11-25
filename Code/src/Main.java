@@ -10,7 +10,6 @@ public class Main {
         System.out.println(myGraph.toString());
         myGraph.deleteEdges(5);
         System.out.println(myGraph.toString());
-
         System.out.println(myGraph.revealRelationshipsInW());
 
     }
