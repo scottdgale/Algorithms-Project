@@ -23,6 +23,9 @@ public class Graph {
 	private int numXVertices;
 	private int numWVertices;
 
+	private int d0;
+	private int d1;
+
 	/**
 	 * Constructor to instantiate this object
 	 *
@@ -55,6 +58,7 @@ public class Graph {
 		this.actualTotalEdges = this.createEdges();
 
 		// Creating and connecting H
+		this.determined0d1();
 		this.createH();
 		this.connectH();
 
@@ -79,10 +83,13 @@ public class Graph {
 	}
 
 	private void createXVerticies() {
-		// determine external degree
 
 		for (int i = 0; i < this.numXVertices; i++) {
-			vertices.add(new XVertex('x', this.countXID++, 1)); // 1 is a placeholder for now
+			// determine external degree -- random number between d_0 and d_1
+			int upperBoundAdjusted = this.d1 - this.d0; // Shift to 0 so that the randomGen can be used
+			int externalDegree = this.randomGen(upperBoundAdjusted) + this.d0; // Shift back for a degree within the
+																				// range
+			vertices.add(new XVertex('x', this.countXID++, externalDegree)); // 1 is a placeholder for now
 		}
 	}
 
@@ -271,6 +278,16 @@ public class Graph {
 			}
 		}
 		return numEdgesToDelete;
+	}
+
+	public void determined0d1() {
+
+		int upperBound = (int) (Math.log(this.numNVertices) / Math.log(2.0)); // pg 184 in paper
+		int lowerBound = this.randomGen(upperBound); // gives me an external degree between 0 and upperBound
+
+		this.d0 = lowerBound;
+		this.d1 = upperBound;
+
 	}
 
 }
