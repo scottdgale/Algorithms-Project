@@ -79,8 +79,10 @@ public class Graph {
 	}
 
 	private void createXVerticies() {
+		// determine external degree
+
 		for (int i = 0; i < this.numXVertices; i++) {
-			vertices.add(new Vertex('x', this.countXID++));
+			vertices.add(new XVertex('x', this.countXID++, 1)); // 1 is a placeholder for now
 		}
 	}
 
@@ -186,12 +188,14 @@ public class Graph {
 	/**
 	 * ConnectH will connect 'x' vertices to 'w' vertices IAW the published
 	 * algorithm.
+	 * 
 	 */
 	private void connectH() {
 		// Connect H to G per the algorithm
+
 		// Connect X vertices to W vertices
 
-		// Connect X vertices to G - H per 'external degree'
+		// Connect X vertices to G - H per 'external degree' of each X vertex
 
 	}
 
