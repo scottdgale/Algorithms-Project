@@ -267,8 +267,8 @@ public class Graph {
 
 		for (int i = start; i < end; i++) {
 			XVertex vertexOfInterest = (XVertex) this.vertices.get(i);
-			System.out.println(vertexOfInterest.toString());
-			System.out.println(vertexOfInterest.getDeterminedExternalDegree());
+			System.out.println("Vertex: " + vertexOfInterest.toString() + " | DeterminedExternalDegree: "
+					+ vertexOfInterest.getDeterminedExternalDegree());
 
 			int diff = ((XVertex) this.vertices.get(i)).getDeterminedExternalDegree()
 					- ((XVertex) this.vertices.get(i)).getCurrentExternalDegree();
