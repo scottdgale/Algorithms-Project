@@ -1,5 +1,5 @@
 
-public class XVertex extends Vertex {
+public class XVertex extends Vertex implements Comparable<XVertex> {
 
 	private int currentExternalDegree;
 	private int determinedExternalDegree;
@@ -21,6 +21,13 @@ public class XVertex extends Vertex {
 
 	public void incrementCurrentExternalDegree() {
 		this.currentExternalDegree++;
+	}
+
+	@Override
+	public int compareTo(XVertex v) {
+
+	    return (this.getId() < v.getId() ? -1 : 
+	            (this.getId() == v.getId() ? 0 : 1));
 	}
 
 }

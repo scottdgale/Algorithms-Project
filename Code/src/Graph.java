@@ -42,7 +42,7 @@ public class Graph {
 
 		this.numNVertices = numN;
 		// this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
-		this.numWVertices = 5;
+		this.numWVertices = 50;
 		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices + this.numWVertices));
 		this.desiredTotalEdges = edges;
 
@@ -216,31 +216,46 @@ public class Graph {
 
 			}
 
-			System.out.println("I'm here");
+			// Sorting the nodes to ensure that we can identify if the set contains NJ
+			System.out.println("Before sort: " + nj);
+
+			XVertexSorter xVertexSorter = new XVertexSorter(nj);
+			ArrayList<XVertex> sortedNJ = xVertexSorter.getSortedXVertices();
+
+			System.out.println("After sort: " + sortedNJ);
+
 			// Check: does nj already exist in set?
-			while (set.contains(nj)) {
-				nj.remove(nj.size() - 1); // remove the last
-				XVertex pick = this.pickAValidXForW(nj);
-				nj.add(pick); // add new random x vertex to nj
+			while (set.contains(sortedNJ)) {
+				sortedNJ.remove(sortedNJ.size() - 1); // remove the last
+				XVertex pick = this.pickAValidXForW(sortedNJ);
+				sortedNJ.add(pick); // add new random x vertex to nj
+
+				System.out.println("Before inner: " + sortedNJ);
+
+				XVertexSorter xVertexSorter2 = new XVertexSorter(sortedNJ);
+				sortedNJ = xVertexSorter2.getSortedXVertices();
+
+				System.out.println("After inner: " + sortedNJ);
 			}
 
 			System.out.println("I'm out");
 			// increment the currentExternalDegrees of all x's in nj
-			for (XVertex x : nj) {
+			for (XVertex x : sortedNJ) {
 				x.incrementCurrentExternalDegree();
 			}
 
 			// add nj to set
-			set.add(nj);
+			set.add(sortedNJ);
 
 			// add links from w_i to x_i's in nj --- or maybe I should be adding links FROM
 			// x_i's to respective w's?
 
-			for (int k = 0; k < nj.size(); k++) {
+			for (int k = 0; k < sortedNJ.size(); k++) {
 				this.vertices.get(i).addNeighbor(nj.get(k));
-				nj.get(k).addNeighbor(this.vertices.get(i));
+				sortedNJ.get(k).addNeighbor(this.vertices.get(i));
 			}
 
+			System.out.println("I'm at the end");
 			// Move on to the next W
 
 		}
@@ -321,26 +336,35 @@ public class Graph {
 		return w;
 	}
 
+	public String revealAllRelationshipsInW() {
+		String w = "";
+		if (this.numWVertices > 0) {
+			for (int i = 0; i < this.numWVertices; i++) {
+				// find w_i and print it with all its neighbors
+				w += "w" + i + ": " + this.vertices.get(i).getNeighbors() + "\n";
+			}
+		}
+		return w;
+	}
 
-    /**
-     * Reveals the relationship between 'x' vertices in the following format:
-     * x1: x2, x3, x4
-     * x2: x1, x3: x1 . . . etc This will facilitate printing the relationship between 'x' nodes.
-     *
-     * @return String in the above format used to print to screen or compare.
-     */
-    public String revealRelationshipsInX() {
-        String x = "";
-        if (this.numXVertices > 0) {
-            int start = this.vertices.size() - this.numXVertices; //location where X vertices start
-            for (int i = start; i < this.vertices.size(); i++) {
-                // find x_i and print it with all its neighbors
-                x += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
-            }
-        }
-        return x;
-    }
-
+	/**
+	 * Reveals the relationship between 'x' vertices in the following format: x1:
+	 * x2, x3, x4 x2: x1, x3: x1 . . . etc This will facilitate printing the
+	 * relationship between 'x' nodes.
+	 *
+	 * @return String in the above format used to print to screen or compare.
+	 */
+	public String revealRelationshipsInX() {
+		String x = "";
+		if (this.numXVertices > 0) {
+			int start = this.vertices.size() - this.numXVertices; // location where X vertices start
+			for (int i = start; i < this.vertices.size(); i++) {
+				// find x_i and print it with all its neighbors
+				x += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
+			}
+		}
+		return x;
+	}
 
 	/**
 	 * Generates and return a random integer between 0 and upperBound
