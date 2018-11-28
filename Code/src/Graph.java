@@ -298,17 +298,6 @@ public class Graph {
 			xPick = randomGen(this.numXVertices);
 			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
 		}
-		// System.out.println("curr Ext " + pick.getCurrentExternalDegree() + " deter
-		// Ext " + pick.getDeterminedExternalDegree());
-		// Check: does this vertex have currentExternalDegree equal to
-		// determinedExternalDegree ? If so, pick
-		// another...
-//		while (pick.getCurrentExternalDegree() == pick.getDeterminedExternalDegree()) {
-//			// System.out.println("I found one with max external! " + pick.toString() +
-//			// "____ " + nj.toString());
-//			xPick = randomGen(this.numXVertices);
-//			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
-//		}
 
 		return pick;
 
@@ -332,24 +321,26 @@ public class Graph {
 		return w;
 	}
 
-	/**
-	 * Reveals the relationship between 'x' vertices in the following format: x1:
-	 * w2, w3, w4 w2: w1, w3: w1 . . . etc This will facilitate printing the
-	 * relationship between 'w' nodes.
-	 *
-	 * @return String in the above format used to print to screen or compare.
-	 */
-	public String revealRelationshipsInX() {
-		String x = "";
-		if (this.numXVertices > 0) {
-			int start = this.vertices.size() - this.numXVertices; // location where X vertices start
-			for (int i = start; i < this.vertices.size(); i++) {
-				// find x_i and print it with all its neighbors
-				x += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
-			}
-		}
-		return x;
-	}
+
+    /**
+     * Reveals the relationship between 'x' vertices in the following format:
+     * x1: x2, x3, x4
+     * x2: x1, x3: x1 . . . etc This will facilitate printing the relationship between 'x' nodes.
+     *
+     * @return String in the above format used to print to screen or compare.
+     */
+    public String revealRelationshipsInX() {
+        String x = "";
+        if (this.numXVertices > 0) {
+            int start = this.vertices.size() - this.numXVertices; //location where X vertices start
+            for (int i = start; i < this.vertices.size(); i++) {
+                // find x_i and print it with all its neighbors
+                x += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
+            }
+        }
+        return x;
+    }
+
 
 	/**
 	 * Generates and return a random integer between 0 and upperBound
