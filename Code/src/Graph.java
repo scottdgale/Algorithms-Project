@@ -26,6 +26,10 @@ public class Graph {
 	private int d0;
 	private int d1;
 
+	private int[] degreeX; 					//array containing value corresponding to degree of each xi
+	private Tree myTree;
+
+
 	/**
 	 * Constructor to instantiate this object
 	 *
@@ -44,6 +48,10 @@ public class Graph {
 		// this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
 		this.numWVertices = 5;
 		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices + this.numWVertices));
+		this.degreeX = new int[this.numXVertices];
+
+		this.myTree = new Tree();
+
 		this.desiredTotalEdges = edges;
 
 		vertices = new ArrayList<Vertex>(0);
@@ -51,7 +59,6 @@ public class Graph {
 		// Create all the vertices in the graph
 		this.createWVertices();
 		this.createNVertices();
-		// this.createXVerticies();
 
 		// Create random edges between all the N and W vertices
 		this.createWEdges();
@@ -407,5 +414,56 @@ public class Graph {
 		this.d1 = upperBound;
 
 	}
+
+	/**
+	 * Recover the subgraph H
+	 *
+	 * @param
+	 * @return
+	 */
+	public String recoverH() {
+		ArrayList<Vertex> candidateX0 = new ArrayList<>();
+		//populate an array with all the degree values for all x vertices
+		for (int i = 0; i < this.numXVertices; i++) {
+			this.degreeX[i] = this.vertices.get(this.vertices.size() - this.numXVertices + i).getVertexDegree();
+		}
+
+		//Create a list of all vertices that match the degree of x0
+		for (int k=0; k<this.vertices.size(); k++){
+			if (this.vertices.get(k).getVertexDegree()==this.degreeX[0]){
+				//create an initial list of candidates for x0
+
+				candidateX0.add(this.vertices.get(k));
+			}
+		}
+
+
+		for (int j=0; j<candidateX0.size(); j++){
+			//Loop through all possible x0 to look at their neighbors and compare to degree of x1
+			addVertexToTree(candidateX0.get(j),1);
+
+		}
+		return "Possible: " + candidateX0.size();
+	}
+
+
+	private void addVertexToTree(Vertex candidate, int degree){
+		if (candidate.getVertexDegree()>0 || degree < this.numXVertices){
+			for (int i=0; i<candidate.getVertexDegree(); i++){
+				//Add leafs only if they match the corresponding degree of xi
+				if (candidate.getNeighbor(i).getVertexDegree() == this.degreeX[degree]){
+					candidate.getNeighbor(i).setParent(candidate.toString());
+					candidate.getNeighbor(i).setLevelInTree(degree);
+					myTree.addLeaf(candidate.getNeighbor(i));
+					this.addVertexToTree(candidate.getNeighbor(i),++degree);
+				}
+			}
+		}
+
+
+
+
+	}
+
 
 }

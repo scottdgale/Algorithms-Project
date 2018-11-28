@@ -15,6 +15,8 @@ public class Vertex {
     private int id;
     //ArrayList of all connected vertices
     private ArrayList<Vertex> neighbors;
+    private String parent;
+    private int levelInTree;
 
 
     /**
@@ -78,6 +80,21 @@ public class Vertex {
     }
 
     /**
+     * Generates a string representation all neighbors or connected vertices
+     * @param
+     * @return a neighbor of the vertex corresponding to the index
+     */
+    public Vertex getNeighbor(int index){
+        if (index < this.neighbors.size()){
+            return this.neighbors.get(index);
+        }
+        else
+            return new Vertex('q',99);      //error vertex
+    }
+
+
+
+    /**
      * Generates a string representation all 'w' neighbors
      *
      * @return only return 'w' neighbors
@@ -123,6 +140,14 @@ public class Vertex {
     private int randomGen (int upperBound){
         Random r = new Random();
         return r.nextInt(upperBound);
+    }
+
+    public void setParent(String parent){
+        this.parent = parent;
+    }
+
+    public void setLevelInTree(int level){
+        this.levelInTree = level;
     }
 
 }
