@@ -41,7 +41,8 @@ public class Graph {
 		int epsilon = 1;
 
 		this.numNVertices = numN;
-		this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
+		// this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
+		this.numWVertices = 5;
 		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices + this.numWVertices));
 		this.desiredTotalEdges = edges;
 
@@ -215,6 +216,7 @@ public class Graph {
 
 			}
 
+			System.out.println("I'm here");
 			// Check: does nj already exist in set?
 			while (set.contains(nj)) {
 				nj.remove(nj.size() - 1); // remove the last
@@ -222,6 +224,7 @@ public class Graph {
 				nj.add(pick); // add new random x vertex to nj
 			}
 
+			System.out.println("I'm out");
 			// increment the currentExternalDegrees of all x's in nj
 			for (XVertex x : nj) {
 				x.incrementCurrentExternalDegree();
@@ -240,8 +243,15 @@ public class Graph {
 			// Move on to the next W
 
 		}
-
+		System.out.println("Continue again");
 		System.out.println("The set: " + set.toString());
+
+		System.out.println("**********************************************");
+		System.out.println("LOOK HERE!!! ");
+		for (int s = 0; s < this.numWVertices; s++) {
+			System.out.println(this.vertices.get(s).toString() + " : " + this.vertices.get(s).getNeighbors());
+		}
+		System.out.println("**********************************************");
 		// Check current external degrees for each x vertex now
 
 		/* Testing print statements below */
