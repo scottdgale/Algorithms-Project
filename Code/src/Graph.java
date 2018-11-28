@@ -196,7 +196,7 @@ public class Graph {
 	private void connectH() {
 		// Connect H to G per the algorithm
 		// Connect X vertices to W vertices
-		int c = 2;
+		int c = 3;
 
 		ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
 
@@ -232,10 +232,9 @@ public class Graph {
 
 			// add links from w_i to x_i's in nj --- or maybe I should be adding links FROM
 			// x_i's to respective w's?
-			Vertex w = this.vertices.get(i);
+
 			for (int k = 0; k < nj.size(); k++) {
 				this.vertices.get(i).addNeighbor(nj.get(k));
-				// w.addNeighbor(nj.get(k));
 			}
 
 			// Move on to the next W
