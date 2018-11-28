@@ -81,14 +81,14 @@ public class Graph {
 		}
 	}
 
-	private void createXVerticies() {
+	private void createXVertices() {
 
 		for (int i = 0; i < this.numXVertices; i++) {
 			// determine external degree -- random number between d_0 and d_1
 			int upperBoundAdjusted = this.d1 - this.d0; // Shift to 0 so that the randomGen can be used
 			int externalDegree = this.randomGen(upperBoundAdjusted) + this.d0; // Shift back for a degree within the
 																				// range
-			vertices.add(new XVertex('x', this.countXID++, externalDegree)); // 1 is a placeholder for now
+			vertices.add(new XVertex('x', this.countXID++, externalDegree));
 		}
 	}
 
@@ -138,11 +138,8 @@ public class Graph {
 						this.vertices.get(j).addNeighbor(this.vertices.get(i));
 					}
 				}
-
 			}
-
 		}
-
 	}
 
 	/**
@@ -182,16 +179,13 @@ public class Graph {
 	 * Create H will create a certain number of 'x' vertices and connect them to
 	 * each other according to the given algorithm.
 	 */
-	public void createH() {
+	private void createH() {
 		// Create H per the algorithm
-
 		// Create vertices of X --- The number of vertices in X is taken from the paper
 		// k = (2 + epsilon)log n
-		this.createXVerticies();
-
+		this.createXVertices();
 		// Create edges within X (both successive and random)
 		this.createXEdges();
-
 	}
 
 	/**
@@ -240,7 +234,8 @@ public class Graph {
 			// x_i's to respective w's?
 			Vertex w = this.vertices.get(i);
 			for (int k = 0; k < nj.size(); k++) {
-				w.addNeighbor(nj.get(k));
+				this.vertices.get(i).addNeighbor(nj.get(k));
+				// w.addNeighbor(nj.get(k));
 			}
 
 			// Move on to the next W
@@ -328,7 +323,7 @@ public class Graph {
 	}
 
 	/**
-	 * Reveals the relationship between 'w' vertices in the following format: w1:
+	 * Reveals the relationship between 'x' vertices in the following format: x1:
 	 * w2, w3, w4 w2: w1, w3: w1 . . . etc This will facilitate printing the
 	 * relationship between 'w' nodes.
 	 *
