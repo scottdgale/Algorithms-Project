@@ -8,10 +8,11 @@ public class Main {
 		System.out.println(myGraph.revealRelationshipsInX());
 		// myGraph.deleteEdges(5);
 
-		// System.out.println(myGraph.toString());
-		//System.out.println(myGraph.revealRelationshipsInW());
+
 
 		System.out.println(myGraph.recoverH());
+		// System.out.println(myGraph.revealRelationshipsInW());
+
 
 	}
 }

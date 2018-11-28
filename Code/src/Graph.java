@@ -45,8 +45,8 @@ public class Graph {
 		int epsilon = 1;
 
 		this.numNVertices = numN;
-		// this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
-		this.numWVertices = 5;
+		this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
+		// this.numWVertices = 50;
 		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices + this.numWVertices));
 		this.degreeX = new int[this.numXVertices];
 
@@ -203,10 +203,14 @@ public class Graph {
 	 */
 	private void connectH() {
 		// Connect H to G per the algorithm
-		// Connect X vertices to W vertices
-		int c = 3;
 
-		ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
+		/**
+		 * STEP 1 : CONNECT X Vertices (ie. H) to W Vertices
+		 * 
+		 */
+		int c = 2;
+
+		ArrayList<ArrayList<XVertex>> set = new ArrayList<>(); // This set contains all of the NJs (one for each W)
 
 		for (int i = 0; i < this.numWVertices; i++) { // for each W vertex
 			int numXvertInSet = this.randomGen(c) + 2; // get a random number between 1 and c inclusive -- gives us the
@@ -223,85 +227,97 @@ public class Graph {
 
 			}
 
-			System.out.println("I'm here");
+			// Sorting the vertices in nj to ensure that we can identify if the set contains
+			// nj (this avoids [x1, x2] [x2, x1] situation
+			XVertexSorter xVertexSorter = new XVertexSorter(nj);
+			ArrayList<XVertex> sortedNJ = xVertexSorter.getSortedXVertices();
+
 			// Check: does nj already exist in set?
-			while (set.contains(nj)) {
-				nj.remove(nj.size() - 1); // remove the last
-				XVertex pick = this.pickAValidXForW(nj);
-				nj.add(pick); // add new random x vertex to nj
+			while (set.contains(sortedNJ)) {
+				sortedNJ.remove(sortedNJ.size() - 1); // remove the last
+				XVertex pick = this.pickAValidXForW(sortedNJ);
+				sortedNJ.add(pick); // add new random x vertex to nj
+				XVertexSorter xVertexSorter2 = new XVertexSorter(sortedNJ);
+				sortedNJ = xVertexSorter2.getSortedXVertices();
+
 			}
 
-			System.out.println("I'm out");
 			// increment the currentExternalDegrees of all x's in nj
-			for (XVertex x : nj) {
+			for (XVertex x : sortedNJ) {
 				x.incrementCurrentExternalDegree();
 			}
 
 			// add nj to set
-			set.add(nj);
+			set.add(sortedNJ);
 
-			// add links from w_i to x_i's in nj --- or maybe I should be adding links FROM
-			// x_i's to respective w's?
-
-			for (int k = 0; k < nj.size(); k++) {
+			// Add edges between w and each xi in nj
+			for (int k = 0; k < sortedNJ.size(); k++) {
 				this.vertices.get(i).addNeighbor(nj.get(k));
-				nj.get(k).addNeighbor(this.vertices.get(i));
+				sortedNJ.get(k).addNeighbor(this.vertices.get(i));
 			}
 
-			// Move on to the next W
-
 		}
-		System.out.println("Continue again");
-		System.out.println("The set: " + set.toString());
 
-		System.out.println("**********************************************");
-		System.out.println("LOOK HERE!!! ");
-		for (int s = 0; s < this.numWVertices; s++) {
-			System.out.println(this.vertices.get(s).toString() + " : " + this.vertices.get(s).getNeighbors());
+		System.out.println("The set of Nj's: " + set.toString());
+
+		/**
+		 * STEP 2: CONNECT X Vertices to G-H per 'external degree' of each X Vertex
+		 * 
+		 * Plan: Loop through each X vertex -- find difference between
+		 * currExternalDegree and determinedExternalDegree --- add vertices in N for the
+		 * difference Then check to make sure the determinedExternalDegree ==
+		 * currentExternalDegree (ie. we've added all the nodes we needed to)
+		 * 
+		 */
+		int start = this.vertices.size() - this.numXVertices;
+		int end = this.vertices.size();
+
+		for (int i = start; i < end; i++) {
+			XVertex vertexOfInterest = (XVertex) this.vertices.get(i);
+			System.out.println("Vertex: " + vertexOfInterest.toString() + " | DeterminedExternalDegree: "
+					+ vertexOfInterest.getDeterminedExternalDegree());
+
+			int diff = ((XVertex) this.vertices.get(i)).getDeterminedExternalDegree()
+					- ((XVertex) this.vertices.get(i)).getCurrentExternalDegree();
+			if (diff > 0) {
+
+				for (int j = 0; j < diff; j++) { // for each remaining needed external degree
+					// Pick a random index between the w and x vertices (ie. in the 'n' vertices)
+					// Example: if I have 200 total vertices, 20 W, 30 X, and 150 N, then I can pick
+					// a random number between 0 and 149 then add 20 to get an index in the N vertex
+					// range
+					int neighbor = this.randomGen(this.numNVertices) + this.numWVertices;
+
+					if (this.vertices.get(i).addNeighbor(this.vertices.get(neighbor))) {
+						this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
+						// countSuccessfulEdges++;
+
+						((XVertex) this.vertices.get(i)).incrementCurrentExternalDegree();
+					}
+				}
+
+			}
+
+			// Check to make sure that the expected external degree matches the current
+			// external degree
+			if (((XVertex) this.vertices.get(i)).getDeterminedExternalDegree() != ((XVertex) this.vertices.get(i))
+					.getCurrentExternalDegree()) {
+				System.out.println("Something went wrong.... external degree is not matching for " + i);
+			}
 		}
-		System.out.println("**********************************************");
-		// Check current external degrees for each x vertex now
-
-		/* Testing print statements below */
-
-//		int start = this.vertices.size() - this.numXVertices;
-//		int end = this.vertices.size();
-//
-
-//		for (int i = start; i < end; i++) {
-//			System.out.println("Xvertex: " + ((XVertex) this.vertices.get(i)).toString() + " currExt: "
-//					+ ((XVertex) this.vertices.get(i)).getCurrentExternalDegree() + " deterExt: "
-//					+ ((XVertex) this.vertices.get(i)).getDeterminedExternalDegree());
-//		}
-//
-//		String str = "";
-//		for (int i = start; i < end; i++) {
-//			str += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
-//		}
-//		System.out.println(str);
-//
-//		String s = "";
-//		for (int i = 0; i < this.numWVertices; i++) {
-//			s += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
-//
-//		}
-//		System.out.println(s);
-
-		// Connect X vertices to G - H per 'external degree' of each X vertex
 
 	}
 
 	private XVertex pickAValidXForW(ArrayList<XVertex> nj) {
 		// pick a random x vertex
 		int xPick = randomGen(this.numXVertices);
+		ArrayList<Integer> picks = new ArrayList<>();
 
 		XVertex pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
-
 		// Check: does this vertex already exist in Nj? If so, pick another...
 		while (nj.contains(pick) || (pick.getCurrentExternalDegree() == pick.getDeterminedExternalDegree())) {
+
 			// pick a new vertex
-			// System.out.println("I found one! " + pick.toString() + " ___ " +
-			// nj.toString());
 			xPick = randomGen(this.numXVertices);
 			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
 		}
@@ -328,26 +344,35 @@ public class Graph {
 		return w;
 	}
 
+	public String revealAllRelationshipsInW() {
+		String w = "";
+		if (this.numWVertices > 0) {
+			for (int i = 0; i < this.numWVertices; i++) {
+				// find w_i and print it with all its neighbors
+				w += "w" + i + ": " + this.vertices.get(i).getNeighbors() + "\n";
+			}
+		}
+		return w;
+	}
 
-    /**
-     * Reveals the relationship between 'x' vertices in the following format:
-     * x1: x2, x3, x4
-     * x2: x1, x3: x1 . . . etc This will facilitate printing the relationship between 'x' nodes.
-     *
-     * @return String in the above format used to print to screen or compare.
-     */
-    public String revealRelationshipsInX() {
-        String x = "";
-        if (this.numXVertices > 0) {
-            int start = this.vertices.size() - this.numXVertices; //location where X vertices start
-            for (int i = start; i < this.vertices.size(); i++) {
-                // find x_i and print it with all its neighbors
-                x += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
-            }
-        }
-        return x;
-    }
-
+	/**
+	 * Reveals the relationship between 'x' vertices in the following format: x1:
+	 * x2, x3, x4 x2: x1, x3: x1 . . . etc This will facilitate printing the
+	 * relationship between 'x' nodes.
+	 *
+	 * @return String in the above format used to print to screen or compare.
+	 */
+	public String revealRelationshipsInX() {
+		String x = "";
+		if (this.numXVertices > 0) {
+			int start = this.vertices.size() - this.numXVertices; // location where X vertices start
+			for (int i = start; i < this.vertices.size(); i++) {
+				// find x_i and print it with all its neighbors
+				x += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
+			}
+		}
+		return x;
+	}
 
 	/**
 	 * Generates and return a random integer between 0 and upperBound
@@ -410,8 +435,11 @@ public class Graph {
 		int upperBound = (int) (Math.log(this.numNVertices + this.numWVertices)); // pg 184 in paper
 		int lowerBound = this.randomGen(upperBound); // gives me an external degree between 0 and upperBound
 
-		this.d0 = lowerBound;
-		this.d1 = upperBound;
+//		this.d0 = lowerBound;
+//		this.d1 = upperBound;
+
+		this.d0 = 10;
+		this.d1 = 20;
 
 	}
 
