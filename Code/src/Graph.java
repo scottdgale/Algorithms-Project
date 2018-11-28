@@ -31,10 +31,9 @@ public class Graph {
 	 *
 	 * @param numN  indicates the number of "normal" vertices to create (not W or X
 	 *              vertices)
-	 * @param numW  indicates the number of "w" vertices to create (targeted nodes)
 	 * @param edges indicates the approximate number of edges to create in the graph
 	 */
-	public Graph(int numN, int numW, int edges) {
+	public Graph(int numN, int edges) {
 		this.countXID = 0;
 		this.countWID = 0;
 		this.countNID = 0;
@@ -42,8 +41,8 @@ public class Graph {
 		int epsilon = 1;
 
 		this.numNVertices = numN;
-		this.numWVertices = numW;
-		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices) / Math.log(2.0));
+		this.numWVertices = (int)Math.pow(Math.log(this.numNVertices),2);
+		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices+this.numWVertices));
 		this.desiredTotalEdges = edges;
 
 		vertices = new ArrayList<Vertex>(0);
@@ -104,6 +103,7 @@ public class Graph {
 				int neighbor = this.randomGen(this.numWVertices - 1);
 				if (i != neighbor) {
 					this.vertices.get(i).addNeighbor(this.vertices.get(neighbor));
+					this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
 				}
 			}
 		}
@@ -123,6 +123,7 @@ public class Graph {
 		// Add successive edges
 		for (int i = start; i < end - 1; i++) {
 			this.vertices.get(i).addNeighbor(this.vertices.get(i + 1));
+			this.vertices.get(i+1).addNeighbor(this.vertices.get(i));
 		}
 
 		// Now add random edges between X vertices with prob 1/2
@@ -131,9 +132,10 @@ public class Graph {
 				// add an edge if randomGen returns 0; don't add an edge if randomGen returns 1
 				if (i != j) {
 					int result = this.randomGen(2);
-					System.out.println(result);
+					//System.out.println(result);
 					if (result == 0) { // add an edge!
 						this.vertices.get(i).addNeighbor(this.vertices.get(j));
+                        this.vertices.get(j).addNeighbor(this.vertices.get(i));
 					}
 				}
 
@@ -166,8 +168,12 @@ public class Graph {
 				// ensure we don't add a vertex as a neighbor of itself
 				int neighbor = this.randomGen(this.vertices.size());
 				if (neighbor != i)
-					if (this.vertices.get(i).addNeighbor(this.vertices.get(neighbor)))
-						countSuccessfulEdges++;
+					if (this.vertices.get(i).addNeighbor(this.vertices.get(neighbor))){
+					    this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
+					    countSuccessfulEdges++;
+                    }
+
+
 			}
 		}
 		return countSuccessfulEdges;
@@ -319,6 +325,25 @@ public class Graph {
 		}
 		return w;
 	}
+
+    /**
+     * Reveals the relationship between 'w' vertices in the following format: w1:
+     * w2, w3, w4 w2: w1, w3: w1 . . . etc This will facilitate printing the
+     * relationship between 'w' nodes.
+     *
+     * @return String in the above format used to print to screen or compare.
+     */
+    public String revealRelationshipsInX() {
+        String x = "";
+        if (this.numXVertices > 0) {
+            int start = this.vertices.size() - this.numXVertices; //location where X vertices start
+            for (int i = start; i < this.vertices.size(); i++) {
+                // find x_i and print it with all its neighbors
+                x += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
+            }
+        }
+        return x;
+    }
 
 	/**
 	 * Generates and return a random integer between 0 and upperBound
