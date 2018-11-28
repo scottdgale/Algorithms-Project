@@ -41,8 +41,8 @@ public class Graph {
 		int epsilon = 1;
 
 		this.numNVertices = numN;
-		// this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
-		this.numWVertices = 50;
+		this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
+		// this.numWVertices = 50;
 		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices + this.numWVertices));
 		this.desiredTotalEdges = edges;
 
@@ -217,28 +217,20 @@ public class Graph {
 			}
 
 			// Sorting the nodes to ensure that we can identify if the set contains NJ
-			System.out.println("Before sort: " + nj);
 
 			XVertexSorter xVertexSorter = new XVertexSorter(nj);
 			ArrayList<XVertex> sortedNJ = xVertexSorter.getSortedXVertices();
-
-			System.out.println("After sort: " + sortedNJ);
 
 			// Check: does nj already exist in set?
 			while (set.contains(sortedNJ)) {
 				sortedNJ.remove(sortedNJ.size() - 1); // remove the last
 				XVertex pick = this.pickAValidXForW(sortedNJ);
 				sortedNJ.add(pick); // add new random x vertex to nj
-
-				System.out.println("Before inner: " + sortedNJ);
-
 				XVertexSorter xVertexSorter2 = new XVertexSorter(sortedNJ);
 				sortedNJ = xVertexSorter2.getSortedXVertices();
 
-				System.out.println("After inner: " + sortedNJ);
 			}
 
-			System.out.println("I'm out");
 			// increment the currentExternalDegrees of all x's in nj
 			for (XVertex x : sortedNJ) {
 				x.incrementCurrentExternalDegree();
@@ -255,45 +247,14 @@ public class Graph {
 				sortedNJ.get(k).addNeighbor(this.vertices.get(i));
 			}
 
-			System.out.println("I'm at the end");
 			// Move on to the next W
 
 		}
-		System.out.println("Continue again");
-		System.out.println("The set: " + set.toString());
 
-		System.out.println("**********************************************");
-		System.out.println("LOOK HERE!!! ");
-		for (int s = 0; s < this.numWVertices; s++) {
-			System.out.println(this.vertices.get(s).toString() + " : " + this.vertices.get(s).getNeighbors());
-		}
-		System.out.println("**********************************************");
+		System.out.println("The set of Nj's: " + set.toString());
+		System.out.println("");
+
 		// Check current external degrees for each x vertex now
-
-		/* Testing print statements below */
-
-//		int start = this.vertices.size() - this.numXVertices;
-//		int end = this.vertices.size();
-//
-
-//		for (int i = start; i < end; i++) {
-//			System.out.println("Xvertex: " + ((XVertex) this.vertices.get(i)).toString() + " currExt: "
-//					+ ((XVertex) this.vertices.get(i)).getCurrentExternalDegree() + " deterExt: "
-//					+ ((XVertex) this.vertices.get(i)).getDeterminedExternalDegree());
-//		}
-//
-//		String str = "";
-//		for (int i = start; i < end; i++) {
-//			str += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
-//		}
-//		System.out.println(str);
-//
-//		String s = "";
-//		for (int i = 0; i < this.numWVertices; i++) {
-//			s += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
-//
-//		}
-//		System.out.println(s);
 
 		// Connect X vertices to G - H per 'external degree' of each X vertex
 
@@ -302,14 +263,14 @@ public class Graph {
 	private XVertex pickAValidXForW(ArrayList<XVertex> nj) {
 		// pick a random x vertex
 		int xPick = randomGen(this.numXVertices);
+		ArrayList<Integer> picks = new ArrayList<>();
 
 		XVertex pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
-
 		// Check: does this vertex already exist in Nj? If so, pick another...
 		while (nj.contains(pick) || (pick.getCurrentExternalDegree() == pick.getDeterminedExternalDegree())) {
+
 			// pick a new vertex
 			// System.out.println("I found one! " + pick.toString() + " ___ " +
-			// nj.toString());
 			xPick = randomGen(this.numXVertices);
 			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
 		}
@@ -427,8 +388,11 @@ public class Graph {
 		int upperBound = (int) (Math.log(this.numNVertices + this.numWVertices)); // pg 184 in paper
 		int lowerBound = this.randomGen(upperBound); // gives me an external degree between 0 and upperBound
 
-		this.d0 = lowerBound;
-		this.d1 = upperBound;
+//		this.d0 = lowerBound;
+//		this.d1 = upperBound;
+
+		this.d0 = 10;
+		this.d1 = 20;
 
 	}
 

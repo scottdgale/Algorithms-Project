@@ -9,8 +9,7 @@ public class Main {
 		// myGraph.deleteEdges(5);
 
 		// System.out.println(myGraph.toString());
-		System.out.println(myGraph.revealRelationshipsInW());
-		System.out.println(myGraph.revealAllRelationshipsInW());
+		// System.out.println(myGraph.revealRelationshipsInW());
 
 	}
 }
