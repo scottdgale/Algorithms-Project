@@ -196,10 +196,14 @@ public class Graph {
 	 */
 	private void connectH() {
 		// Connect H to G per the algorithm
-		// Connect X vertices to W vertices
-		int c = 3;
 
-		ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
+		/**
+		 * STEP 1 : CONNECT X Vertices (ie. H) to W Vertices
+		 * 
+		 */
+		int c = 2;
+
+		ArrayList<ArrayList<XVertex>> set = new ArrayList<>(); // This set contains all of the NJs (one for each W)
 
 		for (int i = 0; i < this.numWVertices; i++) { // for each W vertex
 			int numXvertInSet = this.randomGen(c) + 2; // get a random number between 1 and c inclusive -- gives us the
@@ -216,8 +220,8 @@ public class Graph {
 
 			}
 
-			// Sorting the nodes to ensure that we can identify if the set contains NJ
-
+			// Sorting the vertices in nj to ensure that we can identify if the set contains
+			// nj (this avoids [x1, x2] [x2, x1] situation
 			XVertexSorter xVertexSorter = new XVertexSorter(nj);
 			ArrayList<XVertex> sortedNJ = xVertexSorter.getSortedXVertices();
 
@@ -239,24 +243,61 @@ public class Graph {
 			// add nj to set
 			set.add(sortedNJ);
 
-			// add links from w_i to x_i's in nj --- or maybe I should be adding links FROM
-			// x_i's to respective w's?
-
+			// Add edges between w and each xi in nj
 			for (int k = 0; k < sortedNJ.size(); k++) {
 				this.vertices.get(i).addNeighbor(nj.get(k));
 				sortedNJ.get(k).addNeighbor(this.vertices.get(i));
 			}
 
-			// Move on to the next W
-
 		}
 
 		System.out.println("The set of Nj's: " + set.toString());
-		System.out.println("");
 
-		// Check current external degrees for each x vertex now
+		/**
+		 * STEP 2: CONNECT X Vertices to G-H per 'external degree' of each X Vertex
+		 * 
+		 * Plan: Loop through each X vertex -- find difference between
+		 * currExternalDegree and determinedExternalDegree --- add vertices in N for the
+		 * difference Then check to make sure the determinedExternalDegree ==
+		 * currentExternalDegree (ie. we've added all the nodes we needed to)
+		 * 
+		 */
+		int start = this.vertices.size() - this.numXVertices;
+		int end = this.vertices.size();
 
-		// Connect X vertices to G - H per 'external degree' of each X vertex
+		for (int i = start; i < end; i++) {
+			XVertex vertexOfInterest = (XVertex) this.vertices.get(i);
+			System.out.println(vertexOfInterest.toString());
+			System.out.println(vertexOfInterest.getDeterminedExternalDegree());
+
+			int diff = ((XVertex) this.vertices.get(i)).getDeterminedExternalDegree()
+					- ((XVertex) this.vertices.get(i)).getCurrentExternalDegree();
+			if (diff > 0) {
+
+				for (int j = 0; j < diff; j++) { // for each remaining needed external degree
+					// Pick a random index between the w and x vertices (ie. in the 'n' vertices)
+					// Example: if I have 200 total vertices, 20 W, 30 X, and 150 N, then I can pick
+					// a random number between 0 and 149 then add 20 to get an index in the N vertex
+					// range
+					int neighbor = this.randomGen(this.numNVertices) + this.numWVertices;
+
+					if (this.vertices.get(i).addNeighbor(this.vertices.get(neighbor))) {
+						this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
+						// countSuccessfulEdges++;
+
+						((XVertex) this.vertices.get(i)).incrementCurrentExternalDegree();
+					}
+				}
+
+			}
+
+			// Check to make sure that the expected external degree matches the current
+			// external degree
+			if (((XVertex) this.vertices.get(i)).getDeterminedExternalDegree() != ((XVertex) this.vertices.get(i))
+					.getCurrentExternalDegree()) {
+				System.out.println("Something went wrong.... external degree is not matching for " + i);
+			}
+		}
 
 	}
 
@@ -270,7 +311,6 @@ public class Graph {
 		while (nj.contains(pick) || (pick.getCurrentExternalDegree() == pick.getDeterminedExternalDegree())) {
 
 			// pick a new vertex
-			// System.out.println("I found one! " + pick.toString() + " ___ " +
 			xPick = randomGen(this.numXVertices);
 			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
 		}
