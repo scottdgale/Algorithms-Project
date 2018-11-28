@@ -238,6 +238,7 @@ public class Graph {
 
 			for (int k = 0; k < nj.size(); k++) {
 				this.vertices.get(i).addNeighbor(nj.get(k));
+				nj.get(k).addNeighbor(this.vertices.get(i));
 			}
 
 			// Move on to the next W
