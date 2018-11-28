@@ -196,10 +196,109 @@ public class Graph {
 	 */
 	private void connectH() {
 		// Connect H to G per the algorithm
-
 		// Connect X vertices to W vertices
+		int c = 3;
+
+		ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
+
+		for (int i = 0; i < this.numWVertices; i++) { // for each W vertex
+			int numXvertInSet = this.randomGen(c) + 1; // get a random number between 1 and c inclusive -- gives us the
+														// size of Nj
+
+			// Set<XVertex> nj = new HashSet<XVertex>();
+			ArrayList<XVertex> nj = new ArrayList<>();
+
+			for (int j = 0; j < numXvertInSet; j++) {
+				XVertex pick = this.pickAValidXForW(nj);
+
+				// add the vertex to nj
+				nj.add(pick);
+
+			}
+
+			// Check: does nj already exist in set?
+			while (set.contains(nj)) {
+				nj.remove(nj.size() - 1); // remove the last
+				XVertex pick = this.pickAValidXForW(nj);
+				nj.add(pick); // add new random x vertex to nj
+			}
+
+			// increment the currentExternalDegrees of all x's in nj
+			for (XVertex x : nj) {
+				x.incrementCurrentExternalDegree();
+			}
+
+			// add nj to set
+			set.add(nj);
+
+			// add links from w_i to x_i's in nj --- or maybe I should be adding links FROM
+			// x_i's to respective w's?
+			Vertex w = this.vertices.get(i);
+			for (int k = 0; k < nj.size(); k++) {
+				w.addNeighbor(nj.get(k));
+			}
+
+			// Move on to the next W
+
+		}
+
+		System.out.println("The set: " + set.toString());
+		// Check current external degrees for each x vertex now
+
+		/* Testing print statements below */
+
+//		int start = this.vertices.size() - this.numXVertices;
+//		int end = this.vertices.size();
+//
+
+//		for (int i = start; i < end; i++) {
+//			System.out.println("Xvertex: " + ((XVertex) this.vertices.get(i)).toString() + " currExt: "
+//					+ ((XVertex) this.vertices.get(i)).getCurrentExternalDegree() + " deterExt: "
+//					+ ((XVertex) this.vertices.get(i)).getDeterminedExternalDegree());
+//		}
+//
+//		String str = "";
+//		for (int i = start; i < end; i++) {
+//			str += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
+//		}
+//		System.out.println(str);
+//
+//		String s = "";
+//		for (int i = 0; i < this.numWVertices; i++) {
+//			s += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
+//
+//		}
+//		System.out.println(s);
 
 		// Connect X vertices to G - H per 'external degree' of each X vertex
+
+	}
+
+	private XVertex pickAValidXForW(ArrayList<XVertex> nj) {
+		// pick a random x vertex
+		int xPick = randomGen(this.numXVertices);
+
+		XVertex pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
+
+		// Check: does this vertex already exist in Nj? If so, pick another...
+		while (nj.contains(pick)) {
+			// pick a new vertex
+			System.out.println("I found one! " + pick.toString() + " ___ " + nj.toString());
+			xPick = randomGen(this.numXVertices);
+			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
+		}
+		// System.out.println("curr Ext " + pick.getCurrentExternalDegree() + " deter
+		// Ext " + pick.getDeterminedExternalDegree());
+		// Check: does this vertex have currentExternalDegree equal to
+		// determinedExternalDegree ? If so, pick
+		// another...
+		while (pick.getCurrentExternalDegree() == pick.getDeterminedExternalDegree()) {
+			System.out.println("I found one with max external! " + pick.toString() + " ___ " + nj.toString());
+			xPick = randomGen(this.numXVertices);
+			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
+		}
+
+		return pick;
 
 	}
 
