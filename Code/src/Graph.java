@@ -41,8 +41,8 @@ public class Graph {
 		int epsilon = 1;
 
 		this.numNVertices = numN;
-		this.numWVertices = (int)Math.pow(Math.log(this.numNVertices),2);
-		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices+this.numWVertices));
+		this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
+		this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices + this.numWVertices));
 		this.desiredTotalEdges = edges;
 
 		vertices = new ArrayList<Vertex>(0);
@@ -123,7 +123,7 @@ public class Graph {
 		// Add successive edges
 		for (int i = start; i < end - 1; i++) {
 			this.vertices.get(i).addNeighbor(this.vertices.get(i + 1));
-			this.vertices.get(i+1).addNeighbor(this.vertices.get(i));
+			this.vertices.get(i + 1).addNeighbor(this.vertices.get(i));
 		}
 
 		// Now add random edges between X vertices with prob 1/2
@@ -132,10 +132,10 @@ public class Graph {
 				// add an edge if randomGen returns 0; don't add an edge if randomGen returns 1
 				if (i != j) {
 					int result = this.randomGen(2);
-					//System.out.println(result);
+					// System.out.println(result);
 					if (result == 0) { // add an edge!
 						this.vertices.get(i).addNeighbor(this.vertices.get(j));
-                        this.vertices.get(j).addNeighbor(this.vertices.get(i));
+						this.vertices.get(j).addNeighbor(this.vertices.get(i));
 					}
 				}
 			}
@@ -165,10 +165,11 @@ public class Graph {
 				// ensure we don't add a vertex as a neighbor of itself
 				int neighbor = this.randomGen(this.vertices.size());
 				if (neighbor != i)
-					if (this.vertices.get(i).addNeighbor(this.vertices.get(neighbor))){
-					    this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
-					    countSuccessfulEdges++;
-                    }
+					if (this.vertices.get(i).addNeighbor(this.vertices.get(neighbor))) {
+						this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
+						countSuccessfulEdges++;
+					}
+
 			}
 		}
 		return countSuccessfulEdges;
@@ -196,10 +197,11 @@ public class Graph {
 		// Connect H to G per the algorithm
 		// Connect X vertices to W vertices
 		int c = 2;
+
 		ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
 
-		for (int i = 0; i < this.numWVertices; i++) {   // for each W vertex
-			int numXvertInSet = this.randomGen(c) + 2;  // get a random number between 1 and c inclusive -- gives us the
+		for (int i = 0; i < this.numWVertices; i++) { // for each W vertex
+			int numXvertInSet = this.randomGen(c) + 2; // get a random number between 1 and c inclusive -- gives us the
 														// size of Nj
 
 			// Set<XVertex> nj = new HashSet<XVertex>();
@@ -233,7 +235,7 @@ public class Graph {
 			Vertex w = this.vertices.get(i);
 			for (int k = 0; k < nj.size(); k++) {
 				this.vertices.get(i).addNeighbor(nj.get(k));
-				//w.addNeighbor(nj.get(k));
+				// w.addNeighbor(nj.get(k));
 			}
 
 			// Move on to the next W
@@ -281,7 +283,8 @@ public class Graph {
 		// Check: does this vertex already exist in Nj? If so, pick another...
 		while (nj.contains(pick) || (pick.getCurrentExternalDegree() == pick.getDeterminedExternalDegree())) {
 			// pick a new vertex
-			System.out.println("I found one! " + pick.toString() + " ___ " + nj.toString());
+			// System.out.println("I found one! " + pick.toString() + " ___ " +
+			// nj.toString());
 			xPick = randomGen(this.numXVertices);
 			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
 		}
@@ -308,6 +311,7 @@ public class Graph {
 		return w;
 	}
 
+
     /**
      * Reveals the relationship between 'x' vertices in the following format:
      * x1: x2, x3, x4
@@ -326,6 +330,7 @@ public class Graph {
         }
         return x;
     }
+
 
 	/**
 	 * Generates and return a random integer between 0 and upperBound
@@ -385,7 +390,7 @@ public class Graph {
 
 	public void determined0d1() {
 
-		int upperBound = (int) (Math.log(this.numNVertices) / Math.log(2.0)); // pg 184 in paper
+		int upperBound = (int) (Math.log(this.numNVertices + this.numWVertices)); // pg 184 in paper
 		int lowerBound = this.randomGen(upperBound); // gives me an external degree between 0 and upperBound
 
 		this.d0 = lowerBound;
