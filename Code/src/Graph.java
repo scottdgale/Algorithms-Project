@@ -279,19 +279,9 @@ public class Graph {
 		XVertex pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
 
 		// Check: does this vertex already exist in Nj? If so, pick another...
-		while (nj.contains(pick)) {
+		while (nj.contains(pick) || (pick.getCurrentExternalDegree() == pick.getDeterminedExternalDegree())) {
 			// pick a new vertex
 			System.out.println("I found one! " + pick.toString() + " ___ " + nj.toString());
-			xPick = randomGen(this.numXVertices);
-			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
-		}
-		// System.out.println("curr Ext " + pick.getCurrentExternalDegree() + " deter
-		// Ext " + pick.getDeterminedExternalDegree());
-		// Check: does this vertex have currentExternalDegree equal to
-		// determinedExternalDegree ? If so, pick
-		// another...
-		while (pick.getCurrentExternalDegree() == pick.getDeterminedExternalDegree()) {
-			//System.out.println("I found one with max external! " + pick.toString() + " ___ " + nj.toString());
 			xPick = randomGen(this.numXVertices);
 			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
 		}
@@ -320,8 +310,8 @@ public class Graph {
 
     /**
      * Reveals the relationship between 'x' vertices in the following format:
-     * x1: w2, w3, w4
-     * w2: w1, w3: w1 . . . etc This will facilitate printing the relationship between 'w' nodes.
+     * x1: x2, x3, x4
+     * x2: x1, x3: x1 . . . etc This will facilitate printing the relationship between 'x' nodes.
      *
      * @return String in the above format used to print to screen or compare.
      */
