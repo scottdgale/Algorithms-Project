@@ -281,12 +281,22 @@ public class Graph {
 					// range
 					int neighbor = this.randomGen(this.numNVertices) + this.numWVertices;
 
-					if (this.vertices.get(i).addNeighbor(this.vertices.get(neighbor))) {
-						this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
-						// countSuccessfulEdges++;
-
-						((XVertex) this.vertices.get(i)).incrementCurrentExternalDegree();
+					// This makes sure that a valid neighbor is select out of N -- if a node has
+					// already been picked, pick another
+					// Uncomment print statements and run several times to see how this works
+					while (!(this.vertices.get(i).addNeighbor(this.vertices.get(neighbor)))) {
+//						System.out.println("Couldn't add " + this.vertices.get(neighbor)
+//								+ " because it is already a neighbor of " + this.vertices.get(i));
+//						System.out.println("Here are the neighbors: " + this.vertices.get(i).getNeighbors());
+						neighbor = this.randomGen(this.numNVertices) + this.numWVertices;
+						// System.out.println("The need neighbor chosen is: " +
+						// this.vertices.get(neighbor));
 					}
+
+					this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
+					// countSuccessfulEdges++;
+
+					((XVertex) this.vertices.get(i)).incrementCurrentExternalDegree();
 				}
 
 			}
@@ -295,7 +305,8 @@ public class Graph {
 			// external degree
 			if (((XVertex) this.vertices.get(i)).getDeterminedExternalDegree() != ((XVertex) this.vertices.get(i))
 					.getCurrentExternalDegree()) {
-				System.out.println("Something went wrong.... external degree is not matching for " + i);
+				System.out.println("Something went wrong.... external degree is not matching for "
+						+ ((XVertex) this.vertices.get(i)).toString());
 			}
 		}
 
