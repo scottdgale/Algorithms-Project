@@ -187,9 +187,6 @@ public class Graph {
 		// Create edges within X (both successive and random)
 		this.createXEdges();
 
-		// determine external degree for each x_i
-		// add edges to G-H (number of edges matches the external degree of that vertex)
-
 	}
 
 	/**
