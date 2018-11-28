@@ -81,14 +81,14 @@ public class Graph {
 		}
 	}
 
-	private void createXVerticies() {
+	private void createXVertices() {
 
 		for (int i = 0; i < this.numXVertices; i++) {
 			// determine external degree -- random number between d_0 and d_1
 			int upperBoundAdjusted = this.d1 - this.d0; // Shift to 0 so that the randomGen can be used
 			int externalDegree = this.randomGen(upperBoundAdjusted) + this.d0; // Shift back for a degree within the
 																				// range
-			vertices.add(new XVertex('x', this.countXID++, externalDegree)); // 1 is a placeholder for now
+			vertices.add(new XVertex('x', this.countXID++, externalDegree));
 		}
 	}
 
@@ -138,11 +138,8 @@ public class Graph {
                         this.vertices.get(j).addNeighbor(this.vertices.get(i));
 					}
 				}
-
 			}
-
 		}
-
 	}
 
 	/**
@@ -172,8 +169,6 @@ public class Graph {
 					    this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
 					    countSuccessfulEdges++;
                     }
-
-
 			}
 		}
 		return countSuccessfulEdges;
@@ -183,16 +178,13 @@ public class Graph {
 	 * Create H will create a certain number of 'x' vertices and connect them to
 	 * each other according to the given algorithm.
 	 */
-	public void createH() {
+	private void createH() {
 		// Create H per the algorithm
-
 		// Create vertices of X --- The number of vertices in X is taken from the paper
 		// k = (2 + epsilon)log n
-		this.createXVerticies();
-
+		this.createXVertices();
 		// Create edges within X (both successive and random)
 		this.createXEdges();
-
 	}
 
 	/**
@@ -203,12 +195,11 @@ public class Graph {
 	private void connectH() {
 		// Connect H to G per the algorithm
 		// Connect X vertices to W vertices
-		int c = 3;
-
+		int c = 2;
 		ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
 
-		for (int i = 0; i < this.numWVertices; i++) { // for each W vertex
-			int numXvertInSet = this.randomGen(c) + 1; // get a random number between 1 and c inclusive -- gives us the
+		for (int i = 0; i < this.numWVertices; i++) {   // for each W vertex
+			int numXvertInSet = this.randomGen(c) + 2;  // get a random number between 1 and c inclusive -- gives us the
 														// size of Nj
 
 			// Set<XVertex> nj = new HashSet<XVertex>();
@@ -241,7 +232,8 @@ public class Graph {
 			// x_i's to respective w's?
 			Vertex w = this.vertices.get(i);
 			for (int k = 0; k < nj.size(); k++) {
-				w.addNeighbor(nj.get(k));
+				this.vertices.get(i).addNeighbor(nj.get(k));
+				//w.addNeighbor(nj.get(k));
 			}
 
 			// Move on to the next W
@@ -299,7 +291,7 @@ public class Graph {
 		// determinedExternalDegree ? If so, pick
 		// another...
 		while (pick.getCurrentExternalDegree() == pick.getDeterminedExternalDegree()) {
-			System.out.println("I found one with max external! " + pick.toString() + " ___ " + nj.toString());
+			//System.out.println("I found one with max external! " + pick.toString() + " ___ " + nj.toString());
 			xPick = randomGen(this.numXVertices);
 			pick = (XVertex) this.vertices.get(this.vertices.size() - this.numXVertices + xPick);
 		}
@@ -327,9 +319,9 @@ public class Graph {
 	}
 
     /**
-     * Reveals the relationship between 'w' vertices in the following format: w1:
-     * w2, w3, w4 w2: w1, w3: w1 . . . etc This will facilitate printing the
-     * relationship between 'w' nodes.
+     * Reveals the relationship between 'x' vertices in the following format:
+     * x1: w2, w3, w4
+     * w2: w1, w3: w1 . . . etc This will facilitate printing the relationship between 'w' nodes.
      *
      * @return String in the above format used to print to screen or compare.
      */
