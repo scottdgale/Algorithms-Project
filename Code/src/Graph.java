@@ -33,6 +33,7 @@ public class Graph {
 
 	private ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
 	private ArrayList<Vertex> discoveredW;
+	private ArrayList<XVertex> allX = new ArrayList<>();
 
 	/**
 	 * Constructor to instantiate this object
@@ -581,10 +582,14 @@ public class Graph {
 		for (int z = 2; z < nj.size(); z++) {
 
 			for (int y = 0; y < candidateWs.size(); y++) {
+				System.out.println("The cand: " + candidateWs.toString());
+				System.out.println("here: " + nj.get(z).getNeighborsArrayList().toString());
+				System.out.println("Should you remove me? " + candidateWs.get(y));
 
 				if (!(nj.get(z).getNeighborsArrayList().contains(candidateWs.get(y)))) {
-
+					System.out.println("remove me!");
 					candidateWs.remove(y);
+					z--;
 
 				}
 
@@ -598,6 +603,24 @@ public class Graph {
 		//
 		//
 		//
+		// can use a set difference of all x's minus x's in NJ
+		System.out.println("All: " + this.allX);
+		ArrayList<Vertex> copy = (ArrayList) this.allX.clone();
+		System.out.println("All (SOPY): " + copy);
+		System.out.println("Nodes in NJ: " + nj.toString());
+		copy.removeAll(nj);
+		System.out.println("After removal (COPY): " + copy);
+		System.out.println("After removal (ORIG): " + this.allX);
+
+		for (int s = 0; s < copy.size(); s++) { // loop through all the nodes in copy
+			for (int p = 0; p < candidateWs.size(); p++) {
+				if (copy.get(s).getNeighborsArrayList().contains(candidateWs.get(p))) {
+					candidateWs.remove(p);
+				}
+			}
+		}
+
+		System.out.println("After: " + candidateWs.toString());
 
 		return candidateWs.get(0);
 
@@ -610,6 +633,8 @@ public class Graph {
 				indexIntoBranches = i;
 			}
 		}
+		this.allX = (ArrayList) this.branches.get(indexIntoBranches).clone();
+
 		for (int k = 0; k < this.branches.get(indexIntoBranches).size(); k++) {
 			for (int j = 0; j < this.branches.get(indexIntoBranches).size(); j++) {
 				// Ignore if the index is the same - otherwise remove the edges
