@@ -49,6 +49,23 @@ public class Vertex {
 	}
 
 	/**
+	 * Remove neighbors (edges/connections) between vertices. This function will NOT
+	 * allow duplicate edges
+	 *
+	 * @param v the vertex to remove as a neighbor
+	 * @return true if successfully removed the vertex as a neighbor
+	 */
+	public boolean removeNeighbor(Vertex v) {
+		// check for duplicates before adding
+		boolean successfulRemove = false;
+		if (this.neighbors.contains(v)) {
+			this.neighbors.remove(v);
+			successfulRemove = true;
+		}
+		return successfulRemove;
+	}
+
+	/**
 	 * Add neighbors (edges/connections) between vertices. This function will NOT
 	 * allow duplicate edges
 	 *

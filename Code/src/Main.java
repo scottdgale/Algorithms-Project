@@ -5,8 +5,8 @@ public class Main {
 		System.out.println("Create the Graph");
 		Graph myGraph = new Graph(2000, 20000);
 		// System.out.println(myGraph.toString());
-		// System.out.println(myGraph.revealRelationshipsInX());
-		System.out.println(myGraph.revealRelationshipsInW());
+		System.out.println(myGraph.revealRelationshipsInX());
+		//System.out.println(myGraph.revealRelationshipsInW());
 		// System.out.println(myGraph.revealAllRelationshipsInW());
 
 		System.out.println(myGraph.recoverH());
@@ -15,6 +15,7 @@ public class Main {
 
 		// System.out.println(myGraph.revealRelationshipsInW());
 		// myGraph.deleteEdges(5);
+		System.out.println(myGraph.revealRelationshipsInX());
 
 	}
 }

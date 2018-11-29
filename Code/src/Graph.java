@@ -540,24 +540,29 @@ public class Graph {
 
 	public String recoverW(){
 		//Call function to remove all X edges in H
+
 		this.trimX();
+		this.findA
 		return "";
 	}
 
 
 	private void trimX(){
-		int indexIntoBranches;
+		int indexIntoBranches=0;
 		for (int i=0; i<this.branches.size(); i++){
 			if (this.branches.get(i).size()==this.numXVertices){
 				indexIntoBranches = i;
 			}
 		}
 		for (int k=0; k<this.branches.get(indexIntoBranches).size(); k++){
-
+			for (int j=0; j<this.branches.get(indexIntoBranches).size(); j++){
+				//Ignore if the index is the same - otherwise remove the edges
+				if (!(k==j)){
+					this.branches.get(indexIntoBranches).get(k).removeNeighbor(this.branches.get(indexIntoBranches).get(j));
+					this.branches.get(indexIntoBranches).get(j).removeNeighbor(this.branches.get(indexIntoBranches).get(k));
+				}
+			}
 		}
-
-
-
 	}
 
 }
