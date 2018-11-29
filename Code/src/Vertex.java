@@ -115,6 +115,15 @@ public class Vertex {
             return new Vertex('q',99);      //error vertex
     }
 
+	/**
+	 * Generates an array list of all neighbors
+	 * @param
+	 * @return a arraylist of all neighbors
+	 */
+	public ArrayList<Vertex> getNeighborsArrayList(){
+		return this.neighbors;
+	}
+
 
 
     /**
