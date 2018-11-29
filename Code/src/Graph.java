@@ -542,7 +542,7 @@ public class Graph {
 		//Call function to remove all X edges in H
 
 		this.trimX();
-		this.findA
+
 		return "";
 	}
 
