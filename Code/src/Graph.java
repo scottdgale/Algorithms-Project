@@ -32,6 +32,7 @@ public class Graph {
 	private boolean found;
 
 	private ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
+	private ArrayList<Vertex> discoveredW;
 
 	/**
 	 * Constructor to instantiate this object
@@ -63,6 +64,8 @@ public class Graph {
 		this.desiredTotalEdges = edges;
 
 		vertices = new ArrayList<Vertex>(0);
+
+		this.discoveredW = new ArrayList<Vertex>();
 
 		// Create all the vertices in the graph
 		this.createWVertices();
@@ -538,28 +541,69 @@ public class Graph {
 
 	}
 
-	public String recoverW(){
-		//Call function to remove all X edges in H
+	public String recoverW() {
+		// Call function to remove all X edges in H
 
 		this.trimX();
-		this.findA
+
+		for (int i = 0; i < set.size(); i++) {
+
+			this.discoveredW.add(findAW(set.get(i)));
+
+		}
+
 		return "";
 	}
 
+	private Vertex findAW(ArrayList<XVertex> nj) {
 
-	private void trimX(){
-		int indexIntoBranches=0;
-		for (int i=0; i<this.branches.size(); i++){
-			if (this.branches.get(i).size()==this.numXVertices){
+		ArrayList<Vertex> candidateWs = new ArrayList<>();
+
+		for (int i = 0; i < 2; i++) {
+
+			for (int j = 0; j < nj.get(i).getVertexDegree(); j++) {
+
+				for (int k = 0; k < nj.get(i + 1).getVertexDegree(); k++) {
+
+					if (nj.get(i).getNeighbor(j).getId() == nj.get(i + 1).getNeighbor(k).getId()) {
+
+						candidateWs.add(nj.get(i).getNeighbor(j));
+
+					}
+
+				}
+			}
+		}
+
+		for (int z = 2; z < nj.size(); z++) {
+
+			for (int y = 0; y < candidateWs.size(); y++) {
+
+				if (nj.get(z).getNeighborsArrayList().contains(candidateWs.get(y))) {
+
+				}
+
+			}
+
+		}
+
+	}
+
+	private void trimX() {
+		int indexIntoBranches = 0;
+		for (int i = 0; i < this.branches.size(); i++) {
+			if (this.branches.get(i).size() == this.numXVertices) {
 				indexIntoBranches = i;
 			}
 		}
-		for (int k=0; k<this.branches.get(indexIntoBranches).size(); k++){
-			for (int j=0; j<this.branches.get(indexIntoBranches).size(); j++){
-				//Ignore if the index is the same - otherwise remove the edges
-				if (!(k==j)){
-					this.branches.get(indexIntoBranches).get(k).removeNeighbor(this.branches.get(indexIntoBranches).get(j));
-					this.branches.get(indexIntoBranches).get(j).removeNeighbor(this.branches.get(indexIntoBranches).get(k));
+		for (int k = 0; k < this.branches.get(indexIntoBranches).size(); k++) {
+			for (int j = 0; j < this.branches.get(indexIntoBranches).size(); j++) {
+				// Ignore if the index is the same - otherwise remove the edges
+				if (!(k == j)) {
+					this.branches.get(indexIntoBranches).get(k)
+							.removeNeighbor(this.branches.get(indexIntoBranches).get(j));
+					this.branches.get(indexIntoBranches).get(j)
+							.removeNeighbor(this.branches.get(indexIntoBranches).get(k));
 				}
 			}
 		}
