@@ -106,8 +106,9 @@ public class Graph {
 	 *
 	 */
 	private void createWEdges() {
+		int scaler = 5; //Adjusts the number of edges in W
 		for (int i = 0; i < this.numWVertices; i++) {
-			for (int j = 0; j < this.randomGen(this.numWVertices); j++) {
+			for (int j = 0; j < this.randomGen(scaler); j++) {
 				int neighbor = this.randomGen(this.numWVertices - 1);
 				if (i != neighbor) {
 					this.vertices.get(i).addNeighbor(this.vertices.get(neighbor));
@@ -139,7 +140,7 @@ public class Graph {
 			for (int j = start; j < end; j++) {
 				// add an edge if randomGen returns 0; don't add an edge if randomGen returns 1
 				if (i != j) {
-					int result = this.randomGen(2);
+					int result = this.randomGen(3);
 					// System.out.println(result);
 					if (result == 0) { // add an edge!
 						this.vertices.get(i).addNeighbor(this.vertices.get(j));
@@ -476,14 +477,18 @@ public class Graph {
 
 
 	private void addVertexToTree(Vertex candidate, int degree){
-		if (candidate.getVertexDegree()>0 || degree < this.numXVertices){
+		if (candidate.getVertexDegree()>0 && degree < this.numXVertices){
 			for (int i=0; i<candidate.getVertexDegree(); i++){
 				//Add leafs only if they match the corresponding degree of xi
-				if (candidate.getNeighbor(i).getVertexDegree() == this.degreeX[degree]){
-					candidate.getNeighbor(i).setParent(candidate.toString());
-					candidate.getNeighbor(i).setLevelInTree(degree);
-					myTree.addLeaf(candidate.getNeighbor(i));
-					this.addVertexToTree(candidate.getNeighbor(i),++degree);
+				if (degree<this.numXVertices){
+					if (candidate.getNeighbor(i).getVertexDegree() == this.degreeX[degree]) {
+						candidate.getNeighbor(i).setParent(candidate.toString());
+						candidate.getNeighbor(i).setLevelInTree(degree);
+						myTree.addLeaf(candidate.getNeighbor(i));
+
+						this.addVertexToTree(candidate.getNeighbor(i), degree + 1);
+					}
+
 				}
 			}
 		}
