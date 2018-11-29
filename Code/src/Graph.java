@@ -552,26 +552,29 @@ public class Graph {
 
 		}
 
+		System.out.println("Discovered W: " + this.discoveredW.toString());
+
 		return "";
 	}
 
 	private Vertex findAW(ArrayList<XVertex> nj) {
 
+		int size = 0;
+
 		ArrayList<Vertex> candidateWs = new ArrayList<>();
 
-		for (int i = 0; i < 2; i++) {
+		int i = 0;
 
-			for (int j = 0; j < nj.get(i).getVertexDegree(); j++) {
+		for (int j = 0; j < nj.get(i).getVertexDegree(); j++) {
 
-				for (int k = 0; k < nj.get(i + 1).getVertexDegree(); k++) {
+			for (int k = 0; k < nj.get(i + 1).getVertexDegree(); k++) {
 
-					if (nj.get(i).getNeighbor(j).getId() == nj.get(i + 1).getNeighbor(k).getId()) {
+				if (nj.get(i).getNeighbor(j).getId() == nj.get(i + 1).getNeighbor(k).getId()) {
 
-						candidateWs.add(nj.get(i).getNeighbor(j));
-
-					}
+					candidateWs.add(nj.get(i).getNeighbor(j));
 
 				}
+
 			}
 		}
 
@@ -579,13 +582,24 @@ public class Graph {
 
 			for (int y = 0; y < candidateWs.size(); y++) {
 
-				if (nj.get(z).getNeighborsArrayList().contains(candidateWs.get(y))) {
+				if (!(nj.get(z).getNeighborsArrayList().contains(candidateWs.get(y)))) {
+
+					candidateWs.remove(y);
 
 				}
 
 			}
 
 		}
+		System.out.println("The candidateWs: " + candidateWs.toString());
+
+		// Check that the nodes in the candiates do NOT exist as neighbors in any other
+		// x outside of nj
+		//
+		//
+		//
+
+		return candidateWs.get(0);
 
 	}
 
