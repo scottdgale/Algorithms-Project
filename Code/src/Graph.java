@@ -387,6 +387,16 @@ public class Graph {
 		return w;
 	}
 
+	public String revealDiscoveredWRelationships(ArrayList<Vertex> discoveredWList) {
+		String w = "";
+		for (int i = 0; i < discoveredWList.size(); i++) {
+			// find w_i and print it with all its neighbors
+			w += discoveredWList.get(i).toString() + ": " + discoveredWList.get(i).getWNeighbors() + "\n";
+		}
+
+		return w;
+	}
+
 	/**
 	 * Reveals the relationship between 'x' vertices in the following format: x1:
 	 * x2, x3, x4 x2: x1, x3: x1 . . . etc This will facilitate printing the
@@ -553,66 +563,50 @@ public class Graph {
 
 		}
 
-		System.out.println("Discovered W: " + this.discoveredW.toString());
+		System.out.println("Discovered W: \n" + this.discoveredW.toString());
+		System.out
+				.println("Reveal Relationships in DiscoveredW: \n" + this.revealDiscoveredWRelationships(discoveredW));
+		System.out.println("Compare with the W Relationships that we expect: \n" + this.revealRelationshipsInW());
 
 		return "";
 	}
 
 	private Vertex findAW(ArrayList<XVertex> nj) {
 
-		int size = 0;
-
 		ArrayList<Vertex> candidateWs = new ArrayList<>();
 
-		int i = 0;
+		// Handle the first two vertices in NJ
+		for (int j = 0; j < nj.get(0).getVertexDegree(); j++) {
 
-		for (int j = 0; j < nj.get(i).getVertexDegree(); j++) {
+			for (int k = 0; k < nj.get(1).getVertexDegree(); k++) {
 
-			for (int k = 0; k < nj.get(i + 1).getVertexDegree(); k++) {
+				if (nj.get(0).getNeighbor(j).getId() == nj.get(1).getNeighbor(k).getId()) {
 
-				if (nj.get(i).getNeighbor(j).getId() == nj.get(i + 1).getNeighbor(k).getId()) {
-
-					candidateWs.add(nj.get(i).getNeighbor(j));
+					candidateWs.add(nj.get(0).getNeighbor(j));
 
 				}
 
 			}
 		}
 
+		// Handle every additional vertex in NJ
 		for (int z = 2; z < nj.size(); z++) {
-
 			for (int y = 0; y < candidateWs.size(); y++) {
-				System.out.println("The cand: " + candidateWs.toString());
-				System.out.println("here: " + nj.get(z).getNeighborsArrayList().toString());
-				System.out.println("Should you remove me? " + candidateWs.get(y));
-
 				if (!(nj.get(z).getNeighborsArrayList().contains(candidateWs.get(y)))) {
-					System.out.println("remove me!");
 					candidateWs.remove(y);
 					z--;
-
 				}
-
 			}
-
 		}
-		System.out.println("The candidateWs: " + candidateWs.toString());
 
-		// Check that the nodes in the candiates do NOT exist as neighbors in any other
+		// Check that the nodes in the candidates do NOT exist as neighbors in any other
 		// x outside of nj
-		//
-		//
-		//
-		// can use a set difference of all x's minus x's in NJ
-		System.out.println("All: " + this.allX);
-		ArrayList<Vertex> copy = (ArrayList) this.allX.clone();
-		System.out.println("All (SOPY): " + copy);
-		System.out.println("Nodes in NJ: " + nj.toString());
-		copy.removeAll(nj);
-		System.out.println("After removal (COPY): " + copy);
-		System.out.println("After removal (ORIG): " + this.allX);
 
-		for (int s = 0; s < copy.size(); s++) { // loop through all the nodes in copy
+		// can use a set difference of all x's minus x's in NJ
+		ArrayList<Vertex> copy = (ArrayList) this.allX.clone();
+		copy.removeAll(nj);
+
+		for (int s = 0; s < copy.size(); s++) {
 			for (int p = 0; p < candidateWs.size(); p++) {
 				if (copy.get(s).getNeighborsArrayList().contains(candidateWs.get(p))) {
 					candidateWs.remove(p);
@@ -620,9 +614,7 @@ public class Graph {
 			}
 		}
 
-		System.out.println("After: " + candidateWs.toString());
-
-		return candidateWs.get(0);
+		return candidateWs.get(0); // return the remaining w candidate
 
 	}
 
@@ -633,7 +625,8 @@ public class Graph {
 				indexIntoBranches = i;
 			}
 		}
-		this.allX = (ArrayList) this.branches.get(indexIntoBranches).clone();
+
+		this.allX = (ArrayList) this.branches.get(indexIntoBranches).clone(); // We need this for a set difference above
 
 		for (int k = 0; k < this.branches.get(indexIntoBranches).size(); k++) {
 			for (int j = 0; j < this.branches.get(indexIntoBranches).size(); j++) {
