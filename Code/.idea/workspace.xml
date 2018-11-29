@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="80146bff-a09e-4e48-aebf-eecd9c7132b6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Code/XVertex.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Code/XVertex.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Graph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Graph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-    </list>
+    <list default="true" id="80146bff-a09e-4e48-aebf-eecd9c7132b6" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -70,8 +65,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Graph.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1501">
-              <caret line="486" selection-start-line="486" selection-end-line="486" />
+            <state relative-caret-position="7910">
+              <caret line="497" column="20" lean-forward="true" selection-start-line="497" selection-start-column="20" selection-end-line="497" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -220,7 +215,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1381" height="885" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18594104" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -274,13 +268,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/XVertex.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Vertex.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="291">
@@ -306,10 +293,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/XVertex.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20">
+          <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Graph.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1501">
-          <caret line="486" selection-start-line="486" selection-end-line="486" />
+        <state relative-caret-position="7910">
+          <caret line="497" column="20" lean-forward="true" selection-start-line="497" selection-start-column="20" selection-end-line="497" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

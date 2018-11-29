@@ -538,4 +538,26 @@ public class Graph {
 
 	}
 
+	public String recoverW(){
+		//Call function to remove all X edges in H
+		this.trimX();
+		return "";
+	}
+
+
+	private void trimX(){
+		int indexIntoBranches;
+		for (int i=0; i<this.branches.size(); i++){
+			if (this.branches.get(i).size()==this.numXVertices){
+				indexIntoBranches = i;
+			}
+		}
+		for (int k=0; k<this.branches.get(indexIntoBranches).size(); k++){
+
+		}
+
+
+
+	}
+
 }
