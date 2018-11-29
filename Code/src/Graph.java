@@ -31,6 +31,8 @@ public class Graph {
 	private ArrayList<ArrayList<Vertex>> branches;
 	private boolean found;
 
+	private ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
+
 	/**
 	 * Constructor to instantiate this object
 	 *
@@ -67,13 +69,16 @@ public class Graph {
 		this.createNVertices();
 
 		// Create random edges between all the N and W vertices
-		this.createWEdges();
-		this.actualTotalEdges = this.createEdges();
+		this.actualTotalEdges = 0;
+		this.actualTotalEdges += this.createWEdges();
+		this.actualTotalEdges += this.createEdges();
 
 		// Creating and connecting H
 		this.determined0d1();
 		this.createH();
 		this.connectH();
+
+		System.out.println("Actual Total Edges: " + this.actualTotalEdges);
 
 	}
 
@@ -111,17 +116,21 @@ public class Graph {
 	 * least some relationship exists between some of the 'w' nodes.
 	 *
 	 */
-	private void createWEdges() {
+	private int createWEdges() {
 		int scaler = 5; // Adjusts the number of edges in W
+		int count = 0;
 		for (int i = 0; i < this.numWVertices; i++) {
 			for (int j = 0; j < this.randomGen(scaler); j++) {
 				int neighbor = this.randomGen(this.numWVertices - 1);
 				if (i != neighbor) {
 					this.vertices.get(i).addNeighbor(this.vertices.get(neighbor));
 					this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
+					count++;
+
 				}
 			}
 		}
+		return count;
 	}
 
 	/**
@@ -146,7 +155,7 @@ public class Graph {
 			for (int j = start; j < end; j++) {
 				// add an edge if randomGen returns 0; don't add an edge if randomGen returns 1
 				if (i != j) {
-					int result = this.randomGen(3);
+					int result = this.randomGen(2);
 					// System.out.println(result);
 					if (result == 0) { // add an edge!
 						this.vertices.get(i).addNeighbor(this.vertices.get(j));
@@ -175,7 +184,7 @@ public class Graph {
 		// then add neighbors (edges are represented by the number of neighbors each
 		// vertex has)
 		for (int i = 0; i < this.vertices.size(); i++) {
-			for (int j = 0; j <= this.randomGen(avgNumEdgesPerVertex * 2); j++) {
+			for (int j = 0; j <= this.randomGen(avgNumEdgesPerVertex * 70); j++) {
 				// select a random vertex from this.vertices (vertex list) and add as neighbor
 				// ensure we don't add a vertex as a neighbor of itself
 				int neighbor = this.randomGen(this.vertices.size());
@@ -217,11 +226,12 @@ public class Graph {
 		 */
 		int c = 2;
 
-		ArrayList<ArrayList<XVertex>> set = new ArrayList<>(); // This set contains all of the NJs (one for each W)
+		// This set contains all of the NJs (one for each W)
 
 		for (int i = 0; i < this.numWVertices; i++) { // for each W vertex
-			int numXvertInSet = this.randomGen(c) + 2; // get a random number between 1 and c inclusive -- gives us the
-														// size of Nj
+			int numXvertInSet = this.randomGen(c) + 2; // get a random number between 1
+			// and c inclusive -- gives us the
+			// size of Nj
 
 			// Set<XVertex> nj = new HashSet<XVertex>();
 			ArrayList<XVertex> nj = new ArrayList<>();
