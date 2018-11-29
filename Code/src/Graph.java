@@ -112,8 +112,9 @@ public class Graph {
 	 *
 	 */
 	private void createWEdges() {
+		int scaler = 5; // Adjusts the number of edges in W
 		for (int i = 0; i < this.numWVertices; i++) {
-			for (int j = 0; j < this.randomGen(this.numWVertices); j++) {
+			for (int j = 0; j < this.randomGen(scaler); j++) {
 				int neighbor = this.randomGen(this.numWVertices - 1);
 				if (i != neighbor) {
 					this.vertices.get(i).addNeighbor(this.vertices.get(neighbor));
@@ -145,7 +146,7 @@ public class Graph {
 			for (int j = start; j < end; j++) {
 				// add an edge if randomGen returns 0; don't add an edge if randomGen returns 1
 				if (i != j) {
-					int result = this.randomGen(2);
+					int result = this.randomGen(3);
 					// System.out.println(result);
 					if (result == 0) { // add an edge!
 						this.vertices.get(i).addNeighbor(this.vertices.get(j));
