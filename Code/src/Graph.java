@@ -47,15 +47,11 @@ public class Graph {
 		this.countWID = 0;
 		this.countNID = 0;
 
-		int epsilon = 1;
+		int delta = 1;
 
 		this.numNVertices = numN;
-		this.numWVertices = (int) Math.pow(Math.log(this.numNVertices), 2);
-		this.numWVertices = 34;
-		// this.numWVertices = 50;
-		// this.numXVertices = (int) ((2 + epsilon) * Math.log(this.numNVertices +
-		// this.numWVertices));
-		this.numXVertices = 10;
+		this.numWVertices = (int) (Math.pow(Math.log(this.numNVertices), 2) * 0.65);
+		this.numXVertices = (int) ((2 + delta) * Math.log(this.numNVertices + this.numWVertices));
 		this.degreeX = new int[this.numXVertices];
 
 		this.myTree = new Tree();
@@ -79,10 +75,8 @@ public class Graph {
 
 		// Creating and connecting H
 		this.determined0d1();
-		this.createH();
-		this.connectH();
 
-		System.out.println("Actual Total Edges: " + this.actualTotalEdges);
+		this.displayGCreation();
 
 	}
 
@@ -160,7 +154,6 @@ public class Graph {
 				// add an edge if randomGen returns 0; don't add an edge if randomGen returns 1
 				if (i != j) {
 					int result = this.randomGen(2);
-					// System.out.println(result);
 					if (result == 0) { // add an edge!
 						this.vertices.get(i).addNeighbor(this.vertices.get(j));
 						this.vertices.get(j).addNeighbor(this.vertices.get(i));
@@ -168,6 +161,29 @@ public class Graph {
 				}
 			}
 		}
+	}
+
+	private int sumOfXDegrees() {
+		int start = this.vertices.size() - this.numXVertices;
+		int end = this.vertices.size();
+		int total = 0;
+
+		for (int i = start; i < end; i++) {
+			total += this.vertices.get(i).getVertexDegree();
+		}
+
+		return total;
+	}
+
+	private int sumOfGDegrees() {
+
+		int total = 0;
+
+		for (int i = 0; i < this.vertices.size(); i++) {
+			total += this.vertices.get(i).getVertexDegree();
+		}
+
+		return total;
 	}
 
 	/**
@@ -188,7 +204,7 @@ public class Graph {
 		// then add neighbors (edges are represented by the number of neighbors each
 		// vertex has)
 		for (int i = 0; i < this.vertices.size(); i++) {
-			for (int j = 0; j <= this.randomGen(avgNumEdgesPerVertex * 70); j++) {
+			for (int j = 0; j <= (this.randomGen(avgNumEdgesPerVertex * 50) + 1); j++) {
 				// select a random vertex from this.vertices (vertex list) and add as neighbor
 				// ensure we don't add a vertex as a neighbor of itself
 				int neighbor = this.randomGen(this.vertices.size());
@@ -207,13 +223,16 @@ public class Graph {
 	 * Create H will create a certain number of 'x' vertices and connect them to
 	 * each other according to the given algorithm.
 	 */
-	private void createH() {
+	public String createH() {
 		// Create H per the algorithm
 		// Create vertices of X --- The number of vertices in X is taken from the paper
 		// k = (2 + epsilon)log n
 		this.createXVertices();
 		// Create edges within X (both successive and random)
 		this.createXEdges();
+
+		return "H Created (X Vertices)";
+
 	}
 
 	/**
@@ -221,7 +240,7 @@ public class Graph {
 	 * algorithm.
 	 * 
 	 */
-	private void connectH() {
+	public String connectH() {
 		// Connect H to G per the algorithm
 
 		/**
@@ -279,8 +298,6 @@ public class Graph {
 
 		}
 
-		System.out.println("The set of Nj's: " + set.toString());
-
 		/**
 		 * STEP 2: CONNECT X Vertices to G-H per 'external degree' of each X Vertex
 		 * 
@@ -295,8 +312,6 @@ public class Graph {
 
 		for (int i = start; i < end; i++) {
 			XVertex vertexOfInterest = (XVertex) this.vertices.get(i);
-			System.out.println("Vertex: " + vertexOfInterest.toString() + " | DeterminedExternalDegree: "
-					+ vertexOfInterest.getDeterminedExternalDegree());
 
 			int diff = ((XVertex) this.vertices.get(i)).getDeterminedExternalDegree()
 					- ((XVertex) this.vertices.get(i)).getCurrentExternalDegree();
@@ -313,16 +328,12 @@ public class Graph {
 					// already been picked, pick another
 					// Uncomment print statements and run several times to see how this works
 					while (!(this.vertices.get(i).addNeighbor(this.vertices.get(neighbor)))) {
-//						System.out.println("Couldn't add " + this.vertices.get(neighbor)
-//								+ " because it is already a neighbor of " + this.vertices.get(i));
-//						System.out.println("Here are the neighbors: " + this.vertices.get(i).getNeighbors());
+
 						neighbor = this.randomGen(this.numNVertices) + this.numWVertices;
-						// System.out.println("The need neighbor chosen is: " +
-						// this.vertices.get(neighbor));
+
 					}
 
 					this.vertices.get(neighbor).addNeighbor(this.vertices.get(i));
-					// countSuccessfulEdges++;
 
 					((XVertex) this.vertices.get(i)).incrementCurrentExternalDegree();
 				}
@@ -338,6 +349,11 @@ public class Graph {
 			}
 		}
 
+		String str = "Number of X Vertices: " + this.numXVertices + "\nAverage Degree of X: "
+				+ (this.sumOfXDegrees() / this.numXVertices)
+				+ "\nNJs (Distinct subsets of X connected to targeted vertices (W): " + set.toString();
+
+		return str;
 	}
 
 	private XVertex pickAValidXForW(ArrayList<XVertex> nj) {
@@ -373,7 +389,7 @@ public class Graph {
 				w += "w" + i + ": " + this.vertices.get(i).getWNeighbors() + "\n";
 			}
 		}
-		return w;
+		return "Expected Relationships between targeted vertices (W): \n" + w;
 	}
 
 	public String revealAllRelationshipsInW() {
@@ -394,7 +410,11 @@ public class Graph {
 			w += discoveredWList.get(i).toString() + ": " + discoveredWList.get(i).getWNeighbors() + "\n";
 		}
 
-		return w;
+		return "\nDiscovered Relationships between targeted vertices (W): \n" + w;
+	}
+
+	public ArrayList<Vertex> getDiscoveredW() {
+		return this.discoveredW;
 	}
 
 	/**
@@ -447,7 +467,6 @@ public class Graph {
 		// Loop through all the vertices and add their neighbors to a string
 		for (int i = 0; i < this.vertices.size(); i++) {
 			s += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
-
 		}
 		s += "Number of Total Edges: " + this.actualTotalEdges;
 		return s;
@@ -475,13 +494,9 @@ public class Graph {
 	public void determined0d1() {
 
 		int upperBound = (int) (Math.log(this.numNVertices + this.numWVertices)); // pg 184 in paper
-		int lowerBound = this.randomGen(upperBound); // gives me an external degree between 0 and upperBound
 
-//		this.d0 = lowerBound;
-//		this.d1 = upperBound;
-
-		this.d0 = 10;
-		this.d1 = 20;
+		this.d0 = upperBound / 2;
+		this.d1 = upperBound;
 
 	}
 
@@ -507,8 +522,6 @@ public class Graph {
 			}
 		}
 
-		System.out.println("Pruned array list: " + candidateX0.toString());
-
 		for (int j = 0; j < candidateX0.size(); j++) {
 			// Loop through all possible x0 to look at their neighbors and compare to degree
 			// of x1
@@ -517,8 +530,21 @@ public class Graph {
 			addVertexToTree(candidateX0.get(j), 1, j);
 
 		}
-		System.out.println(branches.toString());
-		return "Possible: " + candidateX0.size();
+
+		// Print out the branch that is of size k (our found branch)
+		int index = -1;
+		for (int i = 0; i < this.branches.size(); i++) {
+			if (this.branches.get(i).size() == this.numXVertices) {
+				index = i;
+			}
+		}
+
+		String str = "No valid sequence found.";
+		if (index != -1) {
+			str = "Found sequence: " + branches.get(index).toString();
+		}
+
+		return str;
 	}
 
 	private void addVertexToTree(Vertex candidate, int degree, int j) {
@@ -526,10 +552,6 @@ public class Graph {
 		if (candidate.getVertexDegree() > 0 || degree < this.numXVertices) {
 			for (int i = 0; i < candidate.getVertexDegree(); i++) {
 				// Add leafs only if they match the corresponding degree of xi
-
-//				if (this.numXVertices == degree) {
-//					break;
-//				}
 
 				if ((candidate.getNeighbor(i).getVertexDegree() == this.degreeX[degree])
 						&& !(this.branches.get(j).contains(candidate.getNeighbor(i))) && !this.found) {
@@ -563,12 +585,9 @@ public class Graph {
 
 		}
 
-		System.out.println("Discovered W: \n" + this.discoveredW.toString());
-		System.out
-				.println("Reveal Relationships in DiscoveredW: \n" + this.revealDiscoveredWRelationships(discoveredW));
-		System.out.println("Compare with the W Relationships that we expect: \n" + this.revealRelationshipsInW());
+		String str = "Discovered W: " + this.discoveredW.toString();
 
-		return "";
+		return str;
 	}
 
 	private Vertex findAW(ArrayList<XVertex> nj) {
@@ -639,6 +658,14 @@ public class Graph {
 				}
 			}
 		}
+	}
+
+	private void displayGCreation() {
+		System.out.println("Number of vertices in G: " + (this.numNVertices + this.numWVertices));
+		System.out.println("Number of targeted vertices in G (W Vertices): " + this.numWVertices);
+		System.out.println("Total Edges in G: " + this.actualTotalEdges);
+		System.out.println(
+				"Average Degree per vertex in G: " + (this.sumOfGDegrees() / (this.numNVertices + this.numWVertices)));
 	}
 
 }
