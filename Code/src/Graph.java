@@ -101,6 +101,9 @@ public class Graph {
 		}
 	}
 
+	/**
+	 * Create this.numXVertices in the graph
+	 */
 	private void createXVertices() {
 
 		for (int i = 0; i < this.numXVertices; i++) {
@@ -166,6 +169,9 @@ public class Graph {
 		}
 	}
 
+	/**
+	 * Add up the degrees of every X vertex
+	 */
 	private int sumOfXDegrees() {
 		int start = this.vertices.size() - this.numXVertices;
 		int end = this.vertices.size();
@@ -178,6 +184,9 @@ public class Graph {
 		return total;
 	}
 
+	/**
+	 * Add up the degrees of every vertex in G
+	 */
 	private int sumOfGDegrees() {
 
 		int total = 0;
@@ -359,6 +368,11 @@ public class Graph {
 		return str;
 	}
 
+	/**
+	 * Selects a valid X vertex to be included in the set that connects to w
+	 * 
+	 * @param nj - the subset so far
+	 */
 	private XVertex pickAValidXForW(ArrayList<XVertex> nj) {
 		// pick a random x vertex
 		int xPick = randomGen(this.numXVertices);
@@ -395,6 +409,12 @@ public class Graph {
 		return "Expected Relationships between targeted vertices (W): \n" + w;
 	}
 
+	/**
+	 * Reveals the all of relationships of 'w' vertices in the following format: w1:
+	 * <neighbor1>, <neighbor2>, .... etc.
+	 * 
+	 * @return String representation of the relationships of the 'w' vertices
+	 */
 	public String revealAllRelationshipsInW() {
 		String w = "";
 		if (this.numWVertices > 0) {
@@ -406,6 +426,15 @@ public class Graph {
 		return w;
 	}
 
+	/**
+	 * Reveals the relationship between 'w' vertices recovered IAW the algorithm in
+	 * the following format: w1: w2, w3, w4 w2: w1, w3: w1 . . . etc This will
+	 * facilitate printing the relationship between 'w' nodes.
+	 * 
+	 * @param discoveredWList
+	 * 
+	 * @return String in the above format used to print to screen or compare.
+	 */
 	public String revealDiscoveredWRelationships(ArrayList<Vertex> discoveredWList) {
 		String w = "";
 		for (int i = 0; i < discoveredWList.size(); i++) {
@@ -416,6 +445,11 @@ public class Graph {
 		return "\nDiscovered Relationships between targeted vertices (W): \n" + w;
 	}
 
+	/**
+	 * Gets the list of the discovered W vertices
+	 * 
+	 * @return a list of the discovered W vertices
+	 */
 	public ArrayList<Vertex> getDiscoveredW() {
 		return this.discoveredW;
 	}
@@ -494,6 +528,12 @@ public class Graph {
 		return numEdgesToDelete;
 	}
 
+	/**
+	 * Based on the number of vertices in the graph, this determines the upper
+	 * boundary (d1) and lower boundary (d0) of the external degrees of the X
+	 * vertices
+	 * 
+	 */
 	public void determined0d1() {
 
 		int upperBound = (int) (Math.log(this.numNVertices + this.numWVertices)); // pg 184 in paper
@@ -550,6 +590,14 @@ public class Graph {
 		return str;
 	}
 
+	/**
+	 * Adds a vertex to the search tree
+	 * 
+	 * @param candidate - vertex to be added
+	 * @param degree    - level in the tree
+	 * @param j         = index of the branch
+	 * 
+	 */
 	private void addVertexToTree(Vertex candidate, int degree, int j) {
 
 		if (candidate.getVertexDegree() > 0 || degree < this.numXVertices) {
@@ -577,6 +625,11 @@ public class Graph {
 
 	}
 
+	/**
+	 * Recover W with knowledge of newly recovered H
+	 * 
+	 * @return String representing the recovered W vertices.
+	 */
 	public String recoverW() {
 		// Call function to remove all X edges in H
 
@@ -593,6 +646,12 @@ public class Graph {
 		return str;
 	}
 
+	/**
+	 * Find a 'w' vertex given a subset, NJ --this function is used in recoverW()
+	 * 
+	 * @param nj - subset of x that is connected to a w vertex
+	 * @return String representing the recovered W vertices.
+	 */
 	private Vertex findAW(ArrayList<XVertex> nj) {
 
 		ArrayList<Vertex> candidateWs = new ArrayList<>();
@@ -644,6 +703,11 @@ public class Graph {
 
 	}
 
+	/**
+	 * Helper function removing x vertices from neighbors so that w and n vertices
+	 * can be identified
+	 * 
+	 */
 	private void trimX() {
 		int indexIntoBranches = 0;
 		for (int i = 0; i < this.branches.size(); i++) {
@@ -667,6 +731,10 @@ public class Graph {
 		}
 	}
 
+	/**
+	 * Helper Function displaying information about G on creation
+	 * 
+	 */
 	private void displayGCreation() {
 		System.out.println("Number of vertices in G: " + (this.numNVertices + this.numWVertices));
 		System.out.println("Number of targeted vertices in G (W Vertices): " + this.numWVertices);

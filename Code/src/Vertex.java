@@ -10,14 +10,15 @@ import java.util.Random;
  * @since 19 November 2018
  */
 public class Vertex {
-    //type is either x (for vertices in H), w (vertices we want to exploit), or n (neither x or w)
-    private char type;
-    //unique integer id - assigned by creating object
-    private int id;
-    //ArrayList of all connected vertices
-    private ArrayList<Vertex> neighbors;
-    private String parent;
-    private int levelInTree;
+	// type is either x (for vertices in H), w (vertices we want to exploit), or n
+	// (neither x or w)
+	private char type;
+	// unique integer id - assigned by creating object
+	private int id;
+	// ArrayList of all connected vertices
+	private ArrayList<Vertex> neighbors;
+	private String parent;
+	private int levelInTree;
 
 	/**
 	 * Constructor to instantiate this object
@@ -84,6 +85,11 @@ public class Vertex {
 		return this.type + "_" + this.id;
 	}
 
+	/**
+	 * Returns the id of a vertex
+	 *
+	 * @return id of the vertex
+	 */
 	public int getId() {
 		return this.id;
 	}
@@ -101,46 +107,43 @@ public class Vertex {
 		return s;
 	}
 
-
-    /**
-     * Generates a string representation all neighbors or connected vertices
-     * @param
-     * @return a neighbor of the vertex corresponding to the index
-     */
-    public Vertex getNeighbor(int index){
-        if (index < this.neighbors.size()){
-            return this.neighbors.get(index);
-        }
-        else
-            return new Vertex('q',99);      //error vertex
-    }
+	/**
+	 * Generates a string representation all neighbors or connected vertices
+	 * 
+	 * @param
+	 * @return a neighbor of the vertex corresponding to the index
+	 */
+	public Vertex getNeighbor(int index) {
+		if (index < this.neighbors.size()) {
+			return this.neighbors.get(index);
+		} else
+			return new Vertex('q', 99); // error vertex
+	}
 
 	/**
 	 * Generates an array list of all neighbors
+	 * 
 	 * @param
 	 * @return a arraylist of all neighbors
 	 */
-	public ArrayList<Vertex> getNeighborsArrayList(){
+	public ArrayList<Vertex> getNeighborsArrayList() {
 		return this.neighbors;
 	}
 
-
-
-    /**
-     * Generates a string representation all 'w' neighbors
-     *
-     * @return only return 'w' neighbors
-     */
-    public String getWNeighbors(){
-        String s = "";
-        for (int i=0; i<this.neighbors.size(); i++){
-            if (this.neighbors.get(i).type == 'w'){
-                s +=  this.neighbors.get(i).toString() + ", ";
-            }
+	/**
+	 * Generates a string representation all 'w' neighbors
+	 *
+	 * @return only return 'w' neighbors
+	 */
+	public String getWNeighbors() {
+		String s = "";
+		for (int i = 0; i < this.neighbors.size(); i++) {
+			if (this.neighbors.get(i).type == 'w') {
+				s += this.neighbors.get(i).toString() + ", ";
+			}
 		}
 		return s;
 	}
-
 
 	/**
 	 * Removes an edge/connection between two vertices
@@ -153,6 +156,12 @@ public class Vertex {
 		return this.neighbors.remove(v);
 	}
 
+	/**
+	 * Removes a random edge between two vertices
+	 *
+	 * @return true if the vertex was removed / false if the vertex 'v' was NOT a
+	 *         neighbor
+	 */
 	public boolean removeRandomEdge() {
 		boolean removed = false;
 		if (this.neighbors.size() > 0) {
@@ -175,12 +184,22 @@ public class Vertex {
 		return r.nextInt(upperBound);
 	}
 
-    public void setParent(String parent){
-        this.parent = parent;
-    }
+	/**
+	 * Sets the parent of the vertex for the search tree
+	 *
+	 * @param parent
+	 */
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
 
-    public void setLevelInTree(int level){
-        this.levelInTree = level;
-    }
+	/**
+	 * Sets the level of the vertex in the tree
+	 *
+	 * @param level
+	 */
+	public void setLevelInTree(int level) {
+		this.levelInTree = level;
+	}
 
 }
