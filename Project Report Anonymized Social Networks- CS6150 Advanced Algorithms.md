@@ -24,9 +24,9 @@ The paper presents two main categories of attacks: active and passive. Active at
 
 **2. Formal description of the algorithmic problem**
 
-The structure of a social network is a graph where the nodes represent the users and the edges represent relationships between the users. The algorithmic problem presented in the paper centers around how to determine if two (or more) anonymous nodes in a graph have a relationship (edge), thus, compromising privacy. Formally, there is a targeted set of users *w1* , *w2* , *w3*, . . . ,*wn* in an anonymized copy of the social network, *G.* Then, the problem to be solved is to determine whether or not the edge   (*wi*, *wj*)  exists for every *i, j*. 
+The structure of a social network is a graph where the nodes represent the users and the edges represent relationships between the users. The algorithmic problem presented in the paper centers around how to determine if two (or more) anonymous nodes in a graph have a relationship (edge), thus, compromising privacy. Formally, there is a targeted set of users $w_1 , w_2 , w_3, . . . ,w_n$ in an anonymized copy of the social network, $G.$ Then, the problem to be solved is to determine whether or not the edge   ($w_i, w_j$)  exists for every $i, j$. 
 
-This is done by creating a relatively small graph and implanting it into a much larger graph. The small graph is connected to targeted nodes, *w1*, *w2*, *w3*, . . . , *wn*, in the large graph prior to the graph being anonymized. Once the graph is anonymized, the goal is to locate the small implanted graph to determine relationships that exist between the targeted nodes in the larger graph. 
+This is done by creating a relatively small graph and implanting it into a much larger graph. The small graph is connected to targeted nodes, $w_1, w_2, w_3, . . . , w_n$ in the large graph prior to the graph being anonymized. Once the graph is anonymized, the goal is to locate the small implanted graph to determine relationships that exist between the targeted nodes in the larger graph. 
 
 
 
@@ -42,35 +42,35 @@ Goal: Identify targeted nodes in $G$ denoted by $W= \{ w_1, w_2, w_3, . . . w_ b
 
 **Algorithm - Active "Walked-Based Attack"**
 
-a. Create $k$ new nodes: $X = \{x_1, x_2, x_3, . . . , x_k\}$ where $k = (2+\delta)log n$;  where $\delta >0$ (small constant). **Note:** For our implementation we use $\delta=1$. 
+(a) Create $k$ new nodes: $X = \{x_1, x_2, x_3, . . . , x_k\}$ where $k = (2+\delta)log n$;  where $\delta >0$ (small constant). **Note:** For our implementation we use $\delta=1$. 
 
-b. Create a random graph $H$ (defined by $X$) to insert into $G$; $H$ will connect to $G$ in a clever way such that we can discover post anonymization. 
+(b) Create a random graph $H$ (defined by $X$) to insert into $G$; $H$ will connect to $G$ in a clever way such that we can discover post anonymization. 
 
-c. $H$ is connected to $G$ by creating an edge from a node in $H$ to a node in $G$. Thus creating edges $(x_i, w_i)$.  
+(c) $H$ is connected to $G$ by creating an edge from a node in $H$ to a node in $G$. Thus creating edges $(x_i, w_i)$.  
 
-d. Deterministically create edges between nodes $(x_i, x_{i+1})$ - this allows traversal of $X$ in order.
+(d) Deterministically create edges between nodes $(x_i, x_{i+1})$ - this allows traversal of $X$ in order.
 
-e. Choose two constants $d_0 \leq d_1 = O(log(n))$. These values set the parameters of the external number of edges that connect $H$ to $G$. **Note:** For our implementation we set $d_1=logn$ where $n$ is the number of vertices in the graph. We set $d_0=\frac{1}{2} d_1$. 
+(e) Choose two constants $d_0 \leq d_1 = O(log(n))$. These values set the parameters of the external number of edges that connect $H$ to $G$. **Note:** For our implementation we set $d_1=log(n)$ where $n$ is the number of vertices in the graph. We set $d_0=\frac{1}{2} d_1$. 
 
-f. For each $i, i=1,2,3, . . . , k$ we choose an external degree $\Delta_i \in [d_0, d_1]$ specifying the number of edges $x_i$ will have to nodes in $G-H$. These are chosen uniformly at random from the interval $[d_0,d_1]$. 
+(f) For each $i, i=1,2,3, . . . , k$ we choose an external degree $\Delta_i \in [d_0, d_1]$ specifying the number of edges $x_i$ will have to nodes in $G-H$. These are chosen uniformly at random from the interval $[d_0,d_1]$. 
 
-g. Choose a set $N_j \subseteqq \{x_1, x_2, x_3, . . . , x_k\}$ where each $x_i$ is unique and $N_j \leq c$ where c is small constant. For our implementation we use $c=3$. Each $x_i$ can appear in at most $\Delta_i$ of the sets $N_j$. If an $x_i$ appears in $\Delta_i$ sets then it does NOT contain any other edges to vertices in $G$. 
+(g) Choose a set $N_j \subseteqq \{x_1, x_2, x_3, . . . , x_k\}$ where each $x_i$ is unique and $N_j \leq c$ where c is small constant. For our implementation we use $c=3$. Each $x_i$ can appear in at most $\Delta_i$ of the sets $N_j$. If an $x_i$ appears in $\Delta_i$ sets then it does NOT contain any other edges to vertices in $G$. 
 
-h. Construct links to $w_j$ from each $x_i \in N_j$. 
+(h) Construct links to $w_j$ from each $x_i \in N_j$. 
 
-i. Create random edges in $H$ where the edge $(x_i, x_j)$ has $\frac{1}{2}$ probability of existing.
+(i) Create random edges in $H$ where the edge $(x_i, x_j)$ has $\frac{1}{2}$ probability of existing.
 
-j. $\Delta'_i=$ the degree of $x_i$ of all nodes (from edges in both G and H).
+(j) $\Delta'_i=$ the degree of $x_i$ of all nodes (from edges in both $G$ and $H$).
 
 --------------------------------Network gets anonymized---------------------------------------------------------------------------------
 
 **Recovering $H$ given $G$**
 
-a. Search $G$ for every node with degree $\Delta'_1$.
+(a) Search $G$ for every node with degree $\Delta'_1$.
 
-b. Successively try and add nodes with degree $\Delta'_i$ that also have the correct edges to other corresponding nodes in $X$.  **Note:** We used a tree and recursion to solve this problem. We first iterate through all the nodes in the graph acquire a subset of nodes that match the degree of $x_0$. This becomes our candidate $x_0$ list and each one as treated as a child in the tree of the root. Next we look at the neighbors of all candidates and compare to see if any match the degree of $x_1$ - any that are found are added to the tree. The process continues recursively and exits at the first instance the depth of the tree equals the number of nodes in $x$. 
+(b) Successively try and add nodes with degree $\Delta'_i$ that also have the correct edges to other corresponding nodes in $X$.  **Note:** We used a tree and recursion to solve this problem. We first iterate through all the nodes in the graph acquire a subset of nodes that match the degree of $x_0$. This becomes our candidate $x_0$ list and each one as treated as a child in the tree of the root. Next we look at the neighbors of all candidates and compare to see if any match the degree of $x_1$ - any that are found are added to the tree. The process continues recursively and exits at the first instance the depth of the tree equals the number of nodes in $x$. 
 
-c. Once $H$ is discovered, discover  $W= \{ w_1, w_2, w_3, . . . w_k \}$ from the unique relationship between each $w_j$ and $N_j$. **Note:** This process is fairly straightforward. Since we know the makeup of each $N_j$ we can discover the common nodes connected to each $x$ in $N_j$ to identify a $w$. 
+(c) Once $H$ is discovered, discover  $W= \{ w_1, w_2, w_3, . . . w_k \}$ from the unique relationship between each $w_j$ and $N_j$. **Note:** This process is fairly straightforward. Since we know the makeup of each $N_j$ we can discover the common nodes connected to each $x$ in $N_j$ to identify a $w$. 
 
 
 
@@ -90,11 +90,13 @@ In a passive attack, regular users are able to discover their locations in $G$ u
 
 Objective: We implement the Active Walk-Based Algorithm as discussed in section 3 then deterministically removed an increasing number of edges and determined at what point the algorithm became ineffective. We used the Java programming language to implement this project. We created our own graph class which provided us maximum flexibility in performing multiple simulations.
 
-Step 1: Create Datasets. We found several large anonymized social network datasets on the Stanford Network Analysis Project. We created our own datasets modeled after these datasets by replicating the number of nodes, edges, average number of edges per node, etc. We also experimented with graphs of various size ranging from 2,000 - 20,000 nodes and from 20,000- 500,00+ edges respectively. One advantage of creating our own datasets was the ability to quickly alter attributes such as number of nodes, number of edges, and number of edges per node. 
+Step 1: Create Datasets. We found several large anonymized social network datasets on the Stanford Network Analysis Project. We created our own datasets modeled after these datasets by replicating the number of nodes, edges, average number of edges per node, etc. We also experimented with graphs of various size ranging from 2,000 - 20,000 nodes and from 20,000- 500,00+ edges respectively. One advantage of creating our own datasets was the ability to quickly alter attributes such as number of nodes, number of edges, and number of edges per node. **Note:** We included "dataset_1.txt" to illustrate one of our sample datasets. This is a visual text document of the graph $G$. 
 
 Step 2: Implement the "Walk-Based Attack" algorithm. We implemented the "Walk-Based" algorithm on multiple datasets. We worked with the baseline algorithm to ensure it was working properly and we could recover $H$ with a near $100\%$ probability (We recovered $H$ $100\%$ of the time conducting over 50 simulations). Because we created our own datasets there was no anonymization performed. We addressed this issue by not allowing our recovery function access to graph data and variables other than to identify the uniqueness of a node. 
 
 Step 3: Deterministically remove edges to discover the effectiveness of the algorithm. Once the baseline algorithm was functioning properly we deterministically started cutting edges (1%, 2%, . . . n%) up to the point where we could no longer recover $H$. Edges were removed using a random function operating on all the edges (no distinction between edges in $G$ and $H$). 
+
+**Note:** Please refer to "code_instruction.pdf" for detailed information on how to run the code that produced these results. 
 
 
 
@@ -102,15 +104,25 @@ Step 3: Deterministically remove edges to discover the effectiveness of the algo
 
 We tested this algorithm on two sizes of datasets:
 
-​	**Dataset 1:**								**Dataset 2:**
+**Dataset 1:**								
 
-​	Vertices: 4,044							Vertices: 20,063
+​	Vertices: 4,044							
 
-​	Targeted Vertices (W): 44					Targeted Vertices (W): 63
+​	Targeted Vertices (W): 44					
 
-​	Total Edges: ~100,000 (created randomly)	Total Edges: ~547,000 (created randomly)
+​	Total Edges: ~100,000 (created randomly)	
 
-​	Average Degree per Edge: 54				Average Degree per Edge: 54
+​	Average Degree per Edge: 54	
+
+**Dataset 2:**			
+
+​	Vertices: 20,063
+
+​	Targeted Vertices (W): 63
+
+​	Total Edges: ~547,000 (created randomly)
+
+​	Average Degree per Edge: 54
 
 For each dataset size we were able to consistently recover $H$ and successfully identify the relationships that exist in $W$ 100% of the time (over 30 simulations) running the published algorithm without the defensive measure of edge removal. We conducted 200+ simulations on both datasets beginning with the removal of 1% of the edges, up to 10% of the edges at an interval of 1%. We then did an additional test removing 15% of the edges. Each simulation was executed 10 times and the results were averaged to produce our results. 
 
@@ -126,11 +138,11 @@ Note that when we removed $6\%$ of the edges on Dataset 1 (upper left graph), we
 
 **7. Conclusion**
 
-a. The algorithm and resiliency to cuts does not change with respect to the size of the graph. There were no significant differences in the probability of recovering $H$ or the percentage of $w$'s recovered between the two datasets we tested. 
+(a) The algorithm and resiliency to cuts does not change with respect to the size of the graph. There were no significant differences in the probability of recovering $H$ or the percentage of $w$'s recovered between the two datasets we tested. 
 
-b. When we cut approximately $7\%$ of edges we cross the $50\%$ threshold of success probability to recover $H$. Consequently, the probability to recover $w$'s is slightly below that. These results were consistent throughout all of our testing. 
+(b) When we cut approximately $7\%$ of edges we cross the $50\%$ threshold of success probability to recover $H$. Consequently, the probability to recover $w$'s is slightly below that. These results were consistent throughout all of our testing. 
 
-c. When we cut $15\%$ of the edges we approached a $0\%$ probability of recovering $H$. Therefore, we can conclude that if an organization wanted to protect against this specific attack - cutting $15\%$ of the edges would give a very high probability of failure for recovering any relationships in $w$. 
+(c) When we cut $15\%$ of the edges we approached a $0\%$ probability of recovering $H$. Therefore, we can conclude that if an organization wanted to protect against this specific attack - cutting $15\%$ of the edges would give a very high probability of failure for recovering any relationships in $w$. 
 
 
 
