@@ -34,6 +34,7 @@ public class Graph {
 	private ArrayList<ArrayList<XVertex>> set = new ArrayList<>();
 	private ArrayList<Vertex> discoveredW;
 	private ArrayList<XVertex> allX = new ArrayList<>();
+	private int numNotRecovered;
 
 	/**
 	 * Constructor to instantiate this object
@@ -42,10 +43,12 @@ public class Graph {
 	 *              vertices)
 	 * @param edges indicates the approximate number of edges to create in the graph
 	 */
-	public Graph(int numN, int edges) {
+	public Graph(int numN) {
 		this.countXID = 0;
 		this.countWID = 0;
 		this.countNID = 0;
+
+		int numNotRecovered = 0;
 
 		int delta = 1;
 
@@ -58,7 +61,7 @@ public class Graph {
 		this.branches = new ArrayList<>();
 		this.found = false;
 
-		this.desiredTotalEdges = edges;
+		this.desiredTotalEdges = numN * 10;
 
 		vertices = new ArrayList<Vertex>(0);
 
@@ -466,7 +469,7 @@ public class Graph {
 		String s = "";
 		// Loop through all the vertices and add their neighbors to a string
 		for (int i = 0; i < this.vertices.size(); i++) {
-			s += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n";
+			s += this.vertices.get(i).toString() + ": " + this.vertices.get(i).getNeighbors() + "\n\n";
 		}
 		s += "Number of Total Edges: " + this.actualTotalEdges;
 		return s;
@@ -541,7 +544,7 @@ public class Graph {
 
 		String str = "No valid sequence found.";
 		if (index != -1) {
-			str = "Found sequence: " + branches.get(index).toString();
+			str = "Recovered sequence of X Vertices (H): " + branches.get(index).toString();
 		}
 
 		return str;
@@ -633,6 +636,10 @@ public class Graph {
 			}
 		}
 
+		if (candidateWs.size() == 0) {
+			this.numNotRecovered++;
+			return null;
+		}
 		return candidateWs.get(0); // return the remaining w candidate
 
 	}
